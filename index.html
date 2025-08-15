@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>I Think In Spaces | Architectural Design Solutions</title>
+  <style>
+    body {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #222;
+      background-color: #fff;
+      line-height: 1.6;
+    }
+    header {
+      background: url('https://images.unsplash.com/photo-1505691938895-1758d7feb511') center/cover no-repeat;
+      color: white;
+      padding: 80px 20px;
+      text-align: center;
+    }
+    header h1 {
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
+    header p {
+      font-size: 1.2rem;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    section {
+      padding: 60px 20px;
+      max-width: 1100px;
+      margin: auto;
+    }
+    .services, .clients {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: #f9f9f9;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+    }
+    .card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    .card h3 {
+      margin: 15px;
+    }
+    .card p {
+      margin: 0 15px 20px 15px;
+    }
+    footer {
+      background: #111;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>I Think In Spaces</h1>
+    <p>We provide expert architectural design solutions, specializing in test-fit floor plans for real estate companies and tailored spaces for diverse clients—all within the legal scope of our professional abilities.</p>
+  </header>
+
+  <section>
+    <h2>Our Services</h2>
+    <div class="services">
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1600585152220-90363fe7e115" alt="Test Fit Floor Plans">
+        <h3>Test-Fit Floor Plans</h3>
+        <p>Space planning for real estate projects, helping determine feasibility and maximizing functional use of space.</p>
+      </div>
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1560448070-c39e4aa8b0c6" alt="Interior Layouts">
+        <h3>Interior Layouts</h3>
+        <p>Creative and practical interior space designs tailored to your needs and lifestyle.</p>
+      </div>
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1588854337221-4cf16c1ee0c5" alt="Concept Development">
+        <h3>Concept Development</h3>
+        <p>Transforming your ideas into compelling and functional design concepts.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Our Clients</h2>
+    <div class="clients">
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1486308510493-aa64833634ef" alt="Real Estate Companies">
+        <h3>Real Estate Companies</h3>
+        <p>Partnering with real estate firms to provide test-fit floor plans and space utilization strategies.</p>
+      </div>
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1503389152951-9f343605f61e" alt="Business Owners">
+        <h3>Business Owners</h3>
+        <p>Designing functional and appealing business spaces that enhance operations and brand presence.</p>
+      </div>
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994" alt="Homeowners">
+        <h3>Homeowners</h3>
+        <p>Creating tailored residential layouts that reflect personal style and optimize living space.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 I Think In Spaces | All Rights Reserved</p>
+  </footer>
+</body>
+</html>
