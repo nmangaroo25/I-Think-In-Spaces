@@ -4,55 +4,95 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>I Think In Spaces</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; padding: 0; line-height: 1.6; color: #333; }
-    header { background: #222; color: #fff; text-align: center; padding: 60px 20px; }
-    header h1 { font-size: 3em; margin: 0; }
-    nav { background: #444; display: flex; justify-content: center; }
-    nav a { color: #fff; padding: 14px 20px; text-decoration: none; display: block; }
-    nav a:hover { background: #333; }
-    section { padding: 40px 20px; max-width: 1000px; margin: auto; }
-    .about, .staging, .contact { background: #f4f4f4; margin-bottom: 20px; border-radius: 8px; padding: 30px; }
-    h2 { color: #222; margin-top: 0; }
-    img { max-width: 100%; border-radius: 8px; margin: 15px 0; }
-    footer { background: #222; color: #fff; text-align: center; padding: 20px; margin-top: 20px; }
+    /* Add custom styles for navigation bar */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
   </style>
 </head>
-<body>
-  <header>
-    <h1>I Think In Spaces</h1>
-    <p>Drafting precision. Visual clarity. Design support you can trust.</p>
-  </header>
+<body class="font-sans text-gray-800">
 
-  <nav>
-    <a href="#about">About Us</a>
-    <a href="#staging">Virtual Staging</a>
-    <a href="#contact">Contact</a>
+  <!-- Navigation Bar -->
+  <nav class="navbar bg-gray-900 text-white py-4">
+    <div class="max-w-6xl mx-auto flex justify-between items-center px-6">
+      <a href="#home" class="text-2xl font-bold">I Think In Spaces</a>
+      <ul class="flex space-x-6">
+        <li><a href="#about" class="hover:text-gray-400">About Us</a></li>
+        <li><a href="#staging" class="hover:text-gray-400">Virtual Staging</a></li>
+        <li><a href="#contact" class="hover:text-gray-400">Contact</a></li>
+      </ul>
+    </div>
   </nav>
 
-  <section id="about" class="about">
-    <h2>About Us</h2>
-    <p>I Think In Spaces is comprised of drafters who specialize in creating detailed layouts, plans, and illustrations of buildings, structures, systems, and components based on engineering and architectural specifications.</p>
-    <p>Utilizing the latest computer-aided drawing and Building Information Modeling (BIM) software, we bring accuracy, efficiency, and clarity to every project.</p>
-    <p>Whether supporting residential, commercial, or specialty projects, our mission is to deliver drawings that inspire confidence, support collaboration, and set the foundation for successful outcomes.</p>
-    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD... (base64 data truncated)" alt="Architecture Drafting Example">
+  <!-- Hero Section -->
+  <section id="home" class="bg-gray-900 text-white text-center py-20">
+    <h1 class="text-5xl font-bold mb-4">I Think In Spaces</h1>
+    <p class="text-xl">Drafting Services & Virtual Staging Solutions</p>
   </section>
 
-  <section id="staging" class="staging">
-    <h2>Virtual Staging for Realtors</h2>
-    <p>Our virtual staging services help realtors showcase properties with style and imagination. We transform empty or outdated spaces into beautifully staged interiors, allowing potential buyers to visualize a property’s full potential. With high-quality renders and realistic furnishings, we create images that inspire and sell.</p>
-    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD... (base64 data truncated)" alt="Staged Living Room">
-    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD... (base64 data truncated)" alt="Staged Bedroom">
+  <!-- About Us -->
+  <section id="about" class="py-16 px-6 max-w-6xl mx-auto">
+    <h2 class="text-3xl font-bold mb-6 text-center">About Us</h2>
+    <div class="grid md:grid-cols-2 gap-8 items-center">
+      <div>
+        <p class="mb-4">
+          I Think In Spaces is comprised of drafters who specialize in creating detailed layouts, plans, and illustrations of buildings, structures, systems, and components based on engineering and architectural specifications.
+        </p>
+        <p class="mb-4">
+          Utilizing the latest computer-aided drawing and Building Information Modeling (BIM) software, we bring accuracy, efficiency, and clarity to every project.
+        </p>
+        <p>
+          Whether supporting residential, commercial, or specialty projects, our mission is to deliver drawings that inspire confidence, support collaboration, and set the foundation for successful outcomes.
+        </p>
+      </div>
+      <div>
+        <img src="https://cdn.pixabay.com/photo/2015/07/17/22/43/student-849825_1280.jpg" alt="Drafting by hand" class="rounded-2xl shadow-md w-full object-cover h-96">
+      </div>
+    </div>
   </section>
 
-  <section id="contact" class="contact">
-    <h2>Contact Us</h2>
-    <p>Email: info@ithinkinspaces.com</p>
-    <p>Phone: (917) 992-1412</p>
+  <!-- Virtual Staging -->
+  <section id="staging" class="py-16 bg-gray-50 px-6">
+    <h2 class="text-3xl font-bold mb-6 text-center">Virtual Staging for Realtors</h2>
+    <p class="max-w-3xl mx-auto text-center mb-10">
+      Our virtual staging services transform empty rooms into welcoming, furnished spaces — helping potential buyers visualize the full potential of a property.
+    </p>
+    <div class="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+      <!-- Before -->
+      <div class="bg-white shadow-md rounded-2xl overflow-hidden">
+        <img src="https://www.lcpmedia.com/blog/virtual-staging-before-and-after-photos" alt="Empty apartment before staging" class="w-full h-80 object-cover">
+        <div class="p-4">
+          <h3 class="text-xl font-semibold">Before</h3>
+          <p class="text-gray-600">An empty room can feel cold and uninspiring.</p>
+        </div>
+      </div>
+      <!-- After -->
+      <div class="bg-white shadow-md rounded-2xl overflow-hidden">
+        <img src="https://www.styldod.com/blog/virtual-staging-before-and-after-examples" alt="Staged apartment after virtual staging" class="w-full h-80 object-cover">
+        <div class="p-4">
+          <h3 class="text-xl font-semibold">After</h3>
+          <p class="text-gray-600">Staging creates a warm, welcoming environment that sparks imagination.</p>
+        </div>
+      </div>
+    </div>
   </section>
 
-  <footer>
+  <!-- Contact -->
+  <section id="contact" class="py-16 px-6 max-w-4xl mx-auto text-center">
+    <h2 class="text-3xl font-bold mb-6">Contact Us</h2>
+    <p class="mb-4">Have a project in mind? Let’s talk about how I Think In Spaces can bring your ideas to life.</p>
+    <p class="font-semibold">Email: <a href="mailto:info@ithinkinspaces.com" class="text-blue-600">info@ithinkinspaces.com</a></p>
+    <p class="font-semibold">Phone: (917) 992-1412</p>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white text-center py-6">
     <p>&copy; 2025 I Think In Spaces. All rights reserved.</p>
   </footer>
+
 </body>
 </html>
