@@ -17,21 +17,18 @@
 <body class="font-sans text-gray-800">
 
   <!-- Navigation Bar -->
-<nav id="navbar" class="navbar">
-  <div class="container">
-    <div class="navbar-left">
-      <!-- ✅ Replace logo text with Home -->
-      <a href="index.html#home">Home</a>
+  <nav class="navbar bg-gray-900 text-white py-4">
+    <div class="max-w-6xl mx-auto flex justify-between items-center px-6">
+      <!-- Removed logo, kept only nav links -->
+      <ul class="flex space-x-6">
+        <li><a href="#home" class="hover:text-gray-400">Home</a></li>
+        <li><a href="#about" class="hover:text-gray-400">About Us</a></li>
+        <li><a href="#staging" class="hover:text-gray-400">Virtual Staging</a></li>
+        <li><a href="#contact" class="hover:text-gray-400">Contact</a></li>
+        <li><a href="portfolio.html" class="hover:text-gray-400">Portfolio</a></li>
+      </ul>
     </div>
-    <div class="navbar-right">
-      <a href="index.html#about">About</a>
-      <a href="index.html#staging">Staging</a>
-      <a href="index.html#contact">Contact</a>
-      <!-- ✅ New Portfolio tab -->
-      <a href="portfolio.html">Portfolio</a>
-    </div>
-  </div>
-</nav>
+  </nav>
 
   <!-- Hero Section -->
   <section id="home" class="bg-gray-900 text-white text-center py-20">
@@ -55,7 +52,6 @@
         </p>
       </div>
       <div>
-        <!-- Drafting by Hand Image -->
         <img src="images/drafting-by-hand.jpg" alt="Drafting by hand" class="rounded-2xl shadow-md w-full object-cover h-96">
       </div>
     </div>
@@ -68,18 +64,14 @@
       Our virtual staging services transform empty rooms into welcoming, furnished spaces — helping potential buyers visualize the full potential of a property.
     </p>
     <div class="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
-      <!-- Before -->
       <div class="bg-white shadow-md rounded-2xl overflow-hidden">
-        <!-- Replace with your own high quality "before" image -->
         <img src="images/staging-before.jpg" alt="Empty apartment before staging" class="w-full h-80 object-cover">
         <div class="p-4">
           <h3 class="text-xl font-semibold">Before</h3>
           <p class="text-gray-600">An empty room can feel cold and uninspiring.</p>
         </div>
       </div>
-      <!-- After -->
       <div class="bg-white shadow-md rounded-2xl overflow-hidden">
-        <!-- Replace with your own high quality "after" image -->
         <img src="images/staging-after.jpg" alt="Staged apartment after virtual staging" class="w-full h-80 object-cover">
         <div class="p-4">
           <h3 class="text-xl font-semibold">After</h3>
