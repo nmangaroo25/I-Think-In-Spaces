@@ -1,56 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Portfolio - I Think In Spaces</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+    .iframe-container {
+      position: relative;
+      width: 100%;
+      height: calc(100vh - 80px); /* subtract navbar height */
+    }
+    .iframe-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  </style>
 </head>
-<body class="bg-gray-50 text-gray-900">
-
-  <!-- Navigation -->
-  <nav class="bg-black text-white p-4">
-    <div class="container mx-auto flex justify-between items-center">
-      <a href="index.html" class="text-2xl font-bold">I Think In Spaces</a>
-      <ul class="flex space-x-6">
-        <li><a href="index.html#about" class="hover:text-gray-300">About</a></li>
-        <li><a href="index.html#services" class="hover:text-gray-300">Services</a></li>
-        <li><a href="portfolio.html" class="hover:text-gray-300">Portfolio</a></li>
-        <li><a href="index.html#contact" class="hover:text-gray-300">Contact</a></li>
-      </ul>
-    </div>
+<body>
+  <!-- Navigation (copied from your landing page for consistency) -->
+  <nav class="navbar">
+    <div class="logo">I THINK IN SPACES</div>
+    <ul class="nav-links">
+      <li><a href="index.html#home">Home</a></li>
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="index.html#services">Services</a></li>
+      <li><a href="portfolio.html" class="active">Portfolio</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
   </nav>
 
-  <!-- Portfolio Section -->
-  <section id="portfolio" class="py-16">
-    <div class="container mx-auto px-4">
-      <h2 class="text-4xl font-bold text-center mb-12">Our Portfolio</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-
-        <!-- Example Portfolio Items -->
-        <div class="aspect-[4/3] overflow-hidden rounded-xl shadow-lg">
-          <img src="images/drafting-by-hand.jpg" alt="Drafting by Hand"
-               class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
-        </div>
-        
-        <div class="aspect-[4/3] overflow-hidden rounded-xl shadow-lg">
-          <img src="images/bim-software.jpg" alt="BIM Software"
-               class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
-        </div>
-        
-        <div class="aspect-[4/3] overflow-hidden rounded-xl shadow-lg">
-          <img src="images/before-staging.jpg" alt="Before Staging"
-               class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
-        </div>
-        
-        <div class="aspect-[4/3] overflow-hidden rounded-xl shadow-lg">
-          <img src="images/after-staging.jpg" alt="After Staging"
-               class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
-        </div>
-
-      </div>
-    </div>
-  </section>
-
+  <!-- Embedded Adobe Portfolio -->
+  <div class="iframe-container">
+    <iframe 
+      src="https://indd.adobe.com/view/b5885790-d169-4ae6-8534-a34ee7e2b5ae"
+      allowfullscreen>
+    </iframe>
+  </div>
 </body>
 </html>
