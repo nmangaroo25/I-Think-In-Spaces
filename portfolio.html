@@ -4,25 +4,36 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Portfolio - I Think In Spaces</title>
-  <style>
-    body, html {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      overflow: hidden;
-    }
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-  </style>
+  <link href="assets/css/style.css" rel="stylesheet">
 </head>
 <body>
-  <!-- Embed Adobe Online Portfolio -->
-  <iframe 
-    src="https://indd.adobe.com/view/b5885790-d169-4ae6-8534-a34ee7e2b5ae" 
-    allowfullscreen>
-  </iframe>
+
+  <!-- ✅ Keep same navbar as homepage -->
+  <header id="header" class="fixed-top d-flex align-items-center">
+    <div class="container d-flex justify-content-between align-items-center">
+
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a class="nav-link scrollto" href="index.html#home">Home</a></li>
+          <li><a class="nav-link scrollto" href="index.html#about">About</a></li>
+          <li><a class="nav-link scrollto" href="index.html#staging">Staging</a></li>
+          <li><a class="nav-link scrollto" href="index.html#contact">Contact</a></li>
+          <li><a class="nav-link active" href="portfolio.html">Portfolio</a></li>
+        </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
+      </nav><!-- .navbar -->
+
+    </div>
+  </header>
+
+  <!-- ✅ Fullscreen Adobe Portfolio Embed -->
+  <main id="main" style="margin-top: 80px;">
+    <iframe 
+      src="https://indd.adobe.com/view/b5885790-d169-4ae6-8534-a34ee7e2b5ae" 
+      style="width:100%; height:100vh; border:none;" 
+      allowfullscreen>
+    </iframe>
+  </main>
+
 </body>
 </html>
