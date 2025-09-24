@@ -22,11 +22,6 @@
       a.back{left:12px;top:12px;padding:6px 10px}
     }
   </style>
-
-  <!-- jQuery, pdf.js, turn.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/turn.js@4/turn.min.js"></script>
 </head>
 <body>
   <a class="back" href="https://nmangaroo25.github.io/I-Think-In-Spaces/#home">← Back to Home</a>
@@ -53,41 +48,42 @@
     <div id="flipbook" aria-live="polite" role="application" aria-label="Portfolio flipbook"></div>
   </div>
 
-  <div id="message">If the flipbook doesn't load, check the browser console for errors. (Need help? paste any console errors here.)</div>
+  <div id="message">If the flipbook doesn't load, refresh with ?v=2 or check console errors.</div>
 
   <noscript>
-    <div style="position:fixed;left:18px;bottom:64px;background:#fff;color:#111;padding:8px 12px;border-radius:8px">JavaScript required — <a href="Norris_Mangaroo_Arch_Portfolio.pdf" download>download the PDF</a></div>
+    <div style="position:fixed;left:18px;bottom:64px;background:#fff;color:#111;padding:8px 12px;border-radius:8px">
+      JavaScript required — <a href="Norris_Mangaroo_Arch_Portfolio.pdf" download>download the PDF</a>
+    </div>
   </noscript>
+
+  <!-- jQuery, turn.js, pdf.js -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://www.turnjs.com/lib/turn.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 
   <script>
     (function(){
-      // Defensive checks for required libraries
       if (typeof pdfjsLib === 'undefined') {
-        console.error('pdfjsLib not loaded');
-        document.getElementById('message').textContent = 'Error: pdf.js library failed to load.';
-        return;
+        document.getElementById('message').textContent = 'Error: pdf.js failed to load.'; return;
       }
       if (typeof $ === 'undefined' || typeof $.fn.turn === 'undefined') {
-        console.error('jQuery/turn.js not loaded');
-        document.getElementById('message').textContent = 'Error: turn.js or jQuery failed to load.';
-        return;
+        document.getElementById('message').textContent = 'Error: turn.js or jQuery failed to load.'; return;
       }
 
-      const url = "Norris_Mangaroo_Arch_Portfolio.pdf"; // EXACT filename — make sure this matches what's in your repo
+      const url = "Norris_Mangaroo_Arch_Portfolio.pdf"; // must match your file name exactly!
       const flipbookEl = $('#flipbook');
       const pageCanvases = [];
       let currentZoom = 1;
       const baseRenderScale = 1.4;
 
-      async function renderPdfToFlipbook() {
+      async function renderPdf() {
         try {
-          const loadingTask = pdfjsLib.getDocument(url);
-          const pdf = await loadingTask.promise;
+          const pdf = await pdfjsLib.getDocument(url).promise;
           const total = pdf.numPages;
           $('#pageTotal').text('/ ' + total);
           $('#download').attr('href', url);
 
-          for (let i = 1; i <= total; ++i) {
+          for (let i = 1; i <= total; i++) {
             const page = await pdf.getPage(i);
             const viewport = page.getViewport({ scale: baseRenderScale });
             const canvas = document.createElement('canvas');
@@ -95,9 +91,7 @@
             canvas.height = viewport.height;
             canvas.style.maxWidth = '100%';
             canvas.style.height = 'auto';
-            const ctx = canvas.getContext('2d');
-
-            await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+            await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
 
             const pageDiv = document.createElement('div');
             pageDiv.className = 'page';
@@ -122,23 +116,21 @@
           $('#prev').on('click', () => flipbookEl.turn('previous'));
           $('#next').on('click', () => flipbookEl.turn('next'));
           $('#pageNum').attr('max', total);
-          $('#pageNum').on('change', function(){ const p = Math.max(1, Math.min(total, Number(this.value) || 1)); flipbookEl.turn('page', p); });
-          flipbookEl.bind('turned', function(e, page) { $('#pageNum').val(page); });
+          $('#pageNum').on('change', function(){ const p = Math.max(1, Math.min(total, Number(this.value)||1)); flipbookEl.turn('page', p); });
+          flipbookEl.bind('turned', (e, page) => $('#pageNum').val(page));
 
           function applyZoom() {
-            pageCanvases.forEach(c => { c.style.transformOrigin = 'top left'; c.style.transform = 'scale(' + currentZoom + ')'; });
+            pageCanvases.forEach(c => { c.style.transformOrigin='top left'; c.style.transform='scale('+currentZoom+')'; });
           }
-          $('#zoomIn').on('click', function(){ currentZoom = Math.min(2.5, +(currentZoom + 0.15).toFixed(2)); applyZoom(); });
-          $('#zoomOut').on('click', function(){ currentZoom = Math.max(0.6, +(currentZoom - 0.15).toFixed(2)); applyZoom(); });
+          $('#zoomIn').on('click', () => { currentZoom = Math.min(2.5, +(currentZoom+0.15).toFixed(2)); applyZoom(); });
+          $('#zoomOut').on('click', () => { currentZoom = Math.max(0.6, +(currentZoom-0.15).toFixed(2)); applyZoom(); });
 
           flipbookEl.turn('page', 1);
-        } catch (err) {
-          console.error('Flipbook error:', err);
-          document.getElementById('message').textContent = 'Error loading flipbook — open browser console for details.';
+        } catch(err) {
+          document.getElementById('message').textContent = 'Error loading PDF/Flipbook. See console.'; console.error(err);
         }
       }
-
-      renderPdfToFlipbook();
+      renderPdf();
     })();
   </script>
 </body>
