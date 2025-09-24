@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Norris Mangaroo | Portfolio</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/turn.js/4/turn.min.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    #flipbook {
+      width: 90vw;
+      height: 90vh;
+      box-shadow: 0 0 20px rgba(0,0,0,0.8);
+    }
+    .page {
+      background: #fff;
+      color: #000;
+      text-align: center;
+      line-height: 90vh;
+      font-size: 24px;
+    }
+    .back-link {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      background: #fff;
+      color: #000;
+      padding: 8px 12px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .back-link:hover {
+      background: #ddd;
+    }
+  </style>
+</head>
+<body>
+  <a href="https://nmangaroo25.github.io/I-Think-In-Spaces/#home" class="back-link">← Back to Home</a>
+  <div id="flipbook"></div>
+
+  <!-- jQuery + Turn.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/4/turn.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.12.313/pdf.min.js"></script>
+
+  <script>
+    // Load PDF into flipbook
+    const url = "Norris_Mangaroo_Arch_Portfolio.pdf"; // Place PDF in same folder as portfolio.html
+    const flipbook = $("#flipbook");
+
+    pdfjsLib.getDocument(url).promise.then(function(pdf) {
+      const totalPages = pdf.numPages;
+      for (let i = 1; i <= totalPages; i++) {
+        pdf.getPage(i).then(function(page) {
+          const scale = 1.5;
+          const viewport = page.getViewport({ scale: scale });
+
+          const canvas = document.createElement("canvas");
+          const context = canvas.getContext("2d");
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+
+          page.render({ canvasContext: context, viewport: viewport }).promise.then(function() {
+            const pageDiv = document.createElement("div");
+            pageDiv.className = "page";
+            pageDiv.appendChild(canvas);
+            flipbook.append(pageDiv);
+
+            if (i === totalPages) {
+              flipbook.turn({
+                width: "90%",
+                height: "90%",
+                autoCenter: true
+              });
+            }
+          });
+        });
+      }
+    });
+  </script>
+</body>
+</html>
