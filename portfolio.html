@@ -1,12 +1,9 @@
 <script>
-  const LOG = (msg) => console.log('[flipbook] ' + msg);
-
   (async function main(){
     if (typeof $ === 'undefined') { document.getElementById('message').textContent = 'Error: jQuery missing.'; return; }
     if (typeof pdfjsLib === 'undefined') { document.getElementById('message').textContent = 'Error: pdf.js missing.'; return; }
     if (typeof $.fn.turn === 'undefined') { document.getElementById('message').textContent = 'Error: turn.js missing.'; return; }
 
-    LOG('All libraries present. Rendering…');
     const url = "Norris_Mangaroo_Arch_Portfolio.pdf";
     const flipbookEl = $('#flipbook');
     const pageCanvases = [];
@@ -20,7 +17,7 @@
       // Render all pages
       for (let i=1;i<=total;i++){
         const page = await pdf.getPage(i);
-        const viewport = page.getViewport({scale:1.5}); // render higher for crispness
+        const viewport = page.getViewport({scale:1.5});
         const canvas = document.createElement('canvas');
         canvas.width = viewport.width;
         canvas.height = viewport.height;
@@ -30,18 +27,16 @@
         pageCanvases.push(canvas);
       }
 
-      // Initialize turn.js with placeholder sizes
-      const first = pageCanvases[0];
+      // Initialize with safe defaults
       flipbookEl.turn({
-        width: first.width*2,
-        height: first.height,
+        width: 800,
+        height: 600,
         display:'double',
         autoCenter:true,
         elevation:50,
         duration:450
       });
 
-      // --- Fit-to-width sizing ---
       function resizeFlipbook() {
         const first = pageCanvases[0];
         if (!first) return;
@@ -49,7 +44,7 @@
         const spreadNaturalW = first.width * 2;
         const spreadNaturalH = first.height;
 
-        const maxW = window.innerWidth * 0.9; // 90% of viewport width
+        const maxW = window.innerWidth * 0.9;
         const scale = (maxW / spreadNaturalW) * currentZoom;
 
         const targetW = spreadNaturalW * scale;
@@ -58,7 +53,7 @@
         flipbookEl.turn('size', targetW, targetH);
       }
 
-      // Controls
+      // Navigation controls
       $('#prev').on('click',()=>flipbookEl.turn('previous'));
       $('#next').on('click',()=>flipbookEl.turn('next'));
       $('#pageNum').attr('max',total);
@@ -68,11 +63,13 @@
       });
       flipbookEl.bind('turned',(e,p)=>$('#pageNum').val(p));
 
-      // Zoom (affects fit-to-width scaling)
+      // Zoom controls
       $('#zoomIn').on('click',()=>{currentZoom=Math.min(2.5,currentZoom+0.15);resizeFlipbook();});
       $('#zoomOut').on('click',()=>{currentZoom=Math.max(0.6,currentZoom-0.15);resizeFlipbook();});
 
       window.addEventListener('resize', resizeFlipbook);
+
+      // Final resize once first page is guaranteed available
       resizeFlipbook();
 
       document.getElementById('message').textContent='Flipbook loaded — enjoy!';
