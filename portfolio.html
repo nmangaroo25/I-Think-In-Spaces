@@ -11,19 +11,16 @@
     .topbar{position:fixed;right:18px;top:18px;display:flex;gap:8px;align-items:center;z-index:9999}
     .btn{background:#fff;color:#111;border:none;padding:8px 10px;border-radius:8px;font-weight:600;cursor:pointer}
     .pager{display:flex;gap:6px;align-items:center;background:rgba(255,255,255,0.04);padding:6px 8px;border-radius:8px}
-    #viewer-wrap{height:100vh;display:flex;align-items:center;justify-content:center;padding:64px 24px;box-sizing:border-box}
-    #spread{width:88vw;max-width:1400px;height:82vh;display:flex;gap:12px;align-items:center;justify-content:center;transition:transform .45s ease;box-sizing:border-box}
-    .page{flex:1;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:6px;box-shadow:0 6px 18px rgba(0,0,0,0.5)}
-    .page img{display:block;max-width:100%;height:auto;transform-origin:top left;transition:transform .2s ease}
-    #message{position:fixed;left:18px;bottom:18px;background:rgba(255,255,255,0.06);padding:8px 12px;border-radius:8px;color:var(--muted);font-size:13px}
-    #spinner{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:9998;display:none}
-    .spin {width:48px;height:48px;border-radius:50%;border:4px solid rgba(255,255,255,0.15);border-top-color:#fff;animation:spin 1s linear infinite}
-    @keyframes spin {to{transform:rotate(360deg)}}
+    #flipbook-wrap{height:100vh;display:flex;align-items:center;justify-content:center;padding:64px 24px;box-sizing:border-box}
+    #flipbook{box-shadow:0 10px 30px rgba(2,6,23,0.7);background:transparent}
+    .page{background:var(--card);overflow:hidden;display:flex;align-items:center;justify-content:center}
+    #message{position:fixed;left:18px;bottom:18px;background:rgba(255,255,255,0.06);padding:8px 12px;border-radius:8px;color:var(--muted);font-size:13px;max-width:45%}
+    #diag{position:fixed;right:18px;bottom:18px;background:rgba(255,255,255,0.03);padding:8px 12px;border-radius:8px;color:#ddd;font-size:12px;max-width:40%;max-height:36vh;overflow:auto}
+    #diag b{color:#fff}
     @media (max-width:900px){
-      #spread{flex-direction:column;height:auto;padding:36px 12px}
-      .page{width:92vw;height:auto}
-      a.back{left:12px;top:12px;padding:6px 10px}
       .topbar{right:12px;gap:6px}
+      a.back{left:12px;top:12px;padding:6px 10px}
+      #message, #diag{max-width:80%}
     }
   </style>
 </head>
@@ -45,220 +42,86 @@
     </div>
   </div>
 
-  <div id="viewer-wrap">
-    <div id="spread" aria-live="polite" role="application" aria-label="Portfolio spread">
-      <div class="page" id="leftPage"><!-- left image inserted here --></div>
-      <div class="page" id="rightPage"><!-- right image inserted here --></div>
-    </div>
+  <div id="flipbook-wrap">
+    <div id="flipbook" aria-live="polite" role="application" aria-label="Portfolio flipbook"></div>
   </div>
 
-  <div id="spinner"><div class="spin"></div></div>
-  <div id="message">Loading portfolio…</div>
+  <div id="message">Loading flipbook — if nothing appears within 6s, open your browser console or check the diagnostics panel (bottom-right).</div>
+  <div id="diag"><b>Diagnostics:</b><br><ul id="log" style="padding-left:18px;margin:6px 0 0 0;color:#cbd5e1"></ul></div>
 
-  <!-- jQuery + PDF.js -->
+  <noscript>
+    <div style="position:fixed;left:18px;bottom:64px;background:#fff;color:#111;padding:8px 12px;border-radius:8px">
+      JavaScript required — PDF viewer needs JS enabled.
+    </div>
+  </noscript>
+
+  <!-- jQuery + pdf.js -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+  <!-- local Turn.js -->
+  <script src="js/turn.min.js"></script>
 
   <script>
-    (async function(){
-      // CONFIG
-      const URL_PDF = "Norris_Mangaroo_Arch_Portfolio.pdf"; // must match file in repo
-      const PRELOAD_COUNT = 6; // pre-render first 6 pages (as you requested)
-      const PREFETCH_RANGE = 2; // lazy-render neighbors +/- this range
-      const baseScale = 1.3; // PDF render scale (tweak for quality / speed)
+    const LOG = (msg) => {
+      const ul = document.getElementById('log');
+      const li = document.createElement('li');
+      li.textContent = msg;
+      ul.appendChild(li);
+      console.log('[flipbook] ' + msg);
+    };
 
-      // UI refs
-      const leftDiv = document.getElementById('leftPage');
-      const rightDiv = document.getElementById('rightPage');
-      const pageNumInput = document.getElementById('pageNum');
-      const pageTotalSpan = document.getElementById('pageTotal');
-      const msg = document.getElementById('message');
-      const spinner = document.getElementById('spinner');
+    (async function main(){
+      if (typeof $ === 'undefined') { document.getElementById('message').textContent = 'Error: jQuery missing.'; return; }
+      if (typeof pdfjsLib === 'undefined') { document.getElementById('message').textContent = 'Error: pdf.js missing.'; return; }
+      if (typeof $.fn.turn === 'undefined') { document.getElementById('message').textContent = 'Error: turn.js missing.'; return; }
 
-      // State
-      let pdf = null;
-      let totalPages = 0;
-      // caches: dataURLs or Image elements
-      const pageData = new Array(1); // 1-indexed
-      const pagePromises = {}; // in-flight render promises
-      let currentLeft = 1; // left page number in current spread (we use left/right pair: left, left+1)
-
-      // helpers
-      const showSpinner = (on) => { spinner.style.display = on ? 'block' : 'none'; };
-      const setMessage = (t) => { msg.textContent = t || ''; };
-
-      function makeImageElement(dataURL) {
-        const img = new Image();
-        img.src = dataURL;
-        img.alt = 'portfolio page';
-        return img;
-      }
-
-      async function renderPageToDataURL(pageNum) {
-        if (pageData[pageNum]) return pageData[pageNum]; // already rendered
-        if (pagePromises[pageNum]) return pagePromises[pageNum]; // in-flight
-
-        const p = (async () => {
-          try {
-            const page = await pdf.getPage(pageNum);
-            // compute scale: aim for about 1200px width if possible, but we keep baseScale
-            const viewport = page.getViewport({ scale: baseScale });
-            const canvas = document.createElement('canvas');
-            canvas.width = viewport.width;
-            canvas.height = viewport.height;
-            const ctx = canvas.getContext('2d');
-            await page.render({ canvasContext: ctx, viewport }).promise;
-            const dataURL = canvas.toDataURL('image/jpeg', 0.9);
-            pageData[pageNum] = dataURL;
-            return dataURL;
-          } catch (err) {
-            console.error('render error', pageNum, err);
-            throw err;
-          } finally {
-            delete pagePromises[pageNum];
-          }
-        })();
-
-        pagePromises[pageNum] = p;
-        return p;
-      }
-
-      async function ensurePagesLoaded(nums) {
-        // trigger renders in parallel but wait for all
-        const arr = nums.filter(n => n >= 1 && n <= totalPages).map(n => renderPageToDataURL(n));
-        return Promise.all(arr);
-      }
-
-      function setSpread(leftNum) {
-        // leftNum should be 1..totalPages, but we enforce odd/even pairs by starting left at 1,3,5...
-        if (leftNum < 1) leftNum = 1;
-        if (leftNum > totalPages) leftNum = Math.max(1, totalPages - (totalPages%2 === 0 ? 1 : 0));
-        // ensure leftNum is odd to present spreads (1-2,3-4,...)
-        if (leftNum % 2 === 0) leftNum = leftNum - 1 >= 1 ? leftNum - 1 : leftNum;
-        currentLeft = leftNum;
-        // update page input to show left page number
-        pageNumInput.value = leftNum;
-      }
-
-      async function showCurrentSpread() {
-        setMessage('Rendering spread…');
-        showSpinner(true);
-
-        const leftN = currentLeft;
-        const rightN = leftN + 1;
-
-        // ensure the two pages are available (render if needed)
-        try {
-          const results = await ensurePagesLoaded([leftN, rightN]);
-          // results array contains dataURLs matching the requested pages (order preserved)
-          const leftData = pageData[leftN];
-          const rightData = pageData[rightN];
-
-          // put images
-          leftDiv.innerHTML = '';
-          rightDiv.innerHTML = '';
-          if (leftData) leftDiv.appendChild(makeImageElement(leftData));
-          else leftDiv.textContent = '';
-
-          if (rightN <= totalPages && rightData) rightDiv.appendChild(makeImageElement(rightData));
-          else rightDiv.innerHTML = ''; // keep right blank if no page
-
-          setMessage('');
-        } catch (err) {
-          console.error(err);
-          setMessage('Error rendering pages. See console.');
-        } finally {
-          showSpinner(false);
-          // prefetch neighbors quietly
-          for (let p = currentLeft - PREFETCH_RANGE; p <= currentLeft + 1 + PREFETCH_RANGE; p++) {
-            if (p >= 1 && p <= totalPages) renderPageToDataURL(p).catch(()=>{});
-          }
-        }
-      }
-
-      function goNext() {
-        if (currentLeft + 2 <= totalPages) {
-          currentLeft += 2;
-          showCurrentSpread();
-        }
-      }
-      function goPrev() {
-        if (currentLeft - 2 >= 1) {
-          currentLeft -= 2;
-          showCurrentSpread();
-        }
-      }
-
-      // zoom behavior: scale the images inside .page
+      LOG('All libraries present. Rendering…');
+      const url = "Norris_Mangaroo_Arch_Portfolio.pdf";
+      const flipbookEl = $('#flipbook');
+      const pageCanvases = [];
       let currentZoom = 1;
-      function applyZoom() {
-        document.querySelectorAll('#spread img').forEach(img => {
-          img.style.transform = `scale(${currentZoom})`;
-        });
-      }
-      function zoomIn(){
-        currentZoom = Math.min(2.5, +(currentZoom + 0.15).toFixed(2));
-        applyZoom();
-      }
-      function zoomOut(){
-        currentZoom = Math.max(0.6, +(currentZoom - 0.15).toFixed(2));
-        applyZoom();
-      }
 
-      // keyboard and controls
-      document.getElementById('next').addEventListener('click', goNext);
-      document.getElementById('prev').addEventListener('click', goPrev);
-      document.getElementById('zoomIn').addEventListener('click', zoomIn);
-      document.getElementById('zoomOut').addEventListener('click', zoomOut);
-
-      pageNumInput.addEventListener('change', function(){
-        let v = Math.max(1, Math.min(totalPages, Number(this.value) || 1));
-        // make odd
-        if (v % 2 === 0) v = v - 1 >= 1 ? v - 1 : v;
-        setSpread(v);
-        showCurrentSpread();
-      });
-
-      // keyboard arrows
-      window.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowRight') goNext();
-        if (e.key === 'ArrowLeft') goPrev();
-        if (e.key === '+' || e.key === '=') zoomIn();
-        if (e.key === '-') zoomOut();
-      });
-
-      // START: load pdf and preload first pages
       try {
-        setMessage('Loading PDF…');
-        showSpinner(true);
-        const loadingTask = pdfjsLib.getDocument(URL_PDF);
-        pdf = await loadingTask.promise;
-        totalPages = pdf.numPages;
-        pageTotalSpan.textContent = '/ ' + totalPages;
+        const pdf = await pdfjsLib.getDocument(url).promise;
+        const total = pdf.numPages;
+        $('#pageTotal').text('/ ' + total);
 
-        const toPreload = [];
-        for (let i=1;i<=Math.min(PRELOAD_COUNT, totalPages);i++) toPreload.push(i);
-        // render first PRELOAD_COUNT pages sequentially so the UI feels responsive
-        for (let p of toPreload) {
-          await renderPageToDataURL(p);
-          setMessage(`Loading portfolio… (${p}/${Math.min(PRELOAD_COUNT, totalPages)})`);
+        for (let i=1;i<=total;i++){
+          const page = await pdf.getPage(i);
+          const viewport = page.getViewport({scale:1.35});
+          const canvas = document.createElement('canvas');
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+          await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise;
+          const div = document.createElement('div'); div.className='page'; div.appendChild(canvas);
+          flipbookEl.append(div);
+          pageCanvases.push(canvas);
         }
 
-        // set currentLeft to 1 (first spread) and show
-        setSpread(1);
-        await showCurrentSpread();
+        const first = pageCanvases[0];
+        flipbookEl.turn({
+          width: Math.min(window.innerWidth*0.88, first.width*2*0.9),
+          height: Math.min(window.innerHeight*0.82, first.height*0.95),
+          display:'double',
+          autoCenter:true,
+          elevation:50,
+          duration:450
+        });
 
-        // kick off background prefetch for next pages (non-blocking)
-        for (let i = PRELOAD_COUNT+1; i <= Math.min(PRELOAD_COUNT+4, totalPages); i++) {
-          renderPageToDataURL(i).catch(()=>{});
-        }
+        $('#prev').on('click',()=>flipbookEl.turn('previous'));
+        $('#next').on('click',()=>flipbookEl.turn('next'));
+        $('#pageNum').attr('max',total);
+        $('#pageNum').on('change',function(){const p=Math.max(1,Math.min(total,+this.value||1));flipbookEl.turn('page',p);});
+        flipbookEl.bind('turned',(e,p)=>$('#pageNum').val(p));
 
-        setMessage('');
-      } catch (err) {
+        function applyZoom(){pageCanvases.forEach(c=>{c.style.transformOrigin='top left';c.style.transform='scale('+currentZoom+')';});}
+        $('#zoomIn').on('click',()=>{currentZoom=Math.min(2.5,currentZoom+0.15);applyZoom();});
+        $('#zoomOut').on('click',()=>{currentZoom=Math.max(0.6,currentZoom-0.15);applyZoom();});
+
+        document.getElementById('message').textContent='Flipbook loaded — enjoy!';
+      } catch(err){
+        document.getElementById('message').textContent='Error rendering PDF.';
         console.error(err);
-        setMessage('Error loading flipbook — check console.');
-      } finally {
-        showSpinner(false);
       }
     })();
   </script>
