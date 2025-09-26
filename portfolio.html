@@ -51,10 +51,6 @@
       const flipbookEl = $('#flipbook');
       let currentZoom = 1;
 
-      function renderPageToDiv(page, scale=1.2) {
-        return page.getViewport({ scale }).width; // for debug
-      }
-
       try {
         const pdf = await pdfjsLib.getDocument(url).promise;
         const total = pdf.numPages;
@@ -80,27 +76,29 @@
           return div;
         }
 
-        // Render first 2 pages fully before init
-        const page1 = await renderPage(1);
-        flipbookEl.append(page1);
-        if (total >= 2) {
-          const page2 = await renderPage(2);
-          flipbookEl.append(page2);
+        // Pre-render first 6 pages
+        for (let i = 1; i <= Math.min(6,total); i++) {
+          const d = await renderPage(i);
+          flipbookEl.append(d);
         }
 
-        // Init Turn.js only after we have real spreads
-        const w = page1.firstChild.naturalWidth * 2 * 0.9;
-        const h = page1.firstChild.naturalHeight * 0.95;
+        // Initialize turn.js once first pages exist
+        const firstImg = flipbookEl.find('img')[0];
+        const flipW = Math.min(window.innerWidth*0.88, firstImg.naturalWidth*2*0.9);
+        const flipH = Math.min(window.innerHeight*0.82, firstImg.naturalHeight*0.95);
+
         flipbookEl.turn({
-          width: Math.min(window.innerWidth*0.88, w),
-          height: Math.min(window.innerHeight*0.82, h),
+          width: flipW,
+          height: flipH,
           display: 'double',
           autoCenter: true,
-          pages: total
+          pages: total,
+          elevation: 50,
+          duration: 500
         });
 
-        // Add placeholders
-        for (let i=3; i<=total; i++) {
+        // Add placeholders for remaining pages
+        for (let i=7; i<=total; i++) {
           const ph = document.createElement('div');
           ph.className = 'page';
           ph.setAttribute('data-page', i);
@@ -108,7 +106,7 @@
           flipbookEl.turn('addPage', ph, i);
         }
 
-        // Lazy load pages as needed
+        // Lazy-load remaining pages as needed
         async function ensurePage(p) {
           if (p<1 || p>total) return;
           const div = flipbookEl.find(`[data-page='${p}']`)[0];
@@ -122,7 +120,6 @@
           $('#pageNum').val(p);
           [p-2,p-1,p,p+1,p+2].forEach(ensurePage);
         });
-        ensurePage(3); ensurePage(4);
 
         // Controls
         $('#prev').on('click', () => flipbookEl.turn('previous'));
