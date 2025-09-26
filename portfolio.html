@@ -1,72 +1,86 @@
+<div id="flipbook"></div>
+<div id="controls">
+  <button id="prev">Previous</button>
+  <input type="number" id="pageNum">
+  <span id="pageTotal"></span>
+  <button id="next">Next</button>
+  <button id="zoomOut">-</button>
+  <button id="zoomIn">+</button>
+</div>
+<div id="message"></div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/4.1.0/turn.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 <script>
-  (async function main(){
-    if (typeof $ === 'undefined') { document.getElementById('message').textContent = 'Error: jQuery missing.'; return; }
-    if (typeof pdfjsLib === 'undefined') { document.getElementById('message').textContent = 'Error: pdf.js missing.'; return; }
-    if (typeof $.fn.turn === 'undefined') { document.getElementById('message').textContent = 'Error: turn.js missing.'; return; }
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
+</script>
 
-    const url = "Norris_Mangaroo_Arch_Portfolio.pdf";
-    const flipbookEl = $('#flipbook');
-    const pageCanvases = [];
-    let currentZoom = 1;
+<script>
+(async function main() {
+  if (typeof $ === 'undefined') { document.getElementById('message').textContent = 'Error: jQuery missing.'; return; }
+  if (typeof pdfjsLib === 'undefined') { document.getElementById('message').textContent = 'Error: pdf.js missing.'; return; }
+  if (typeof $.fn.turn === 'undefined') { document.getElementById('message').textContent = 'Error: turn.js missing.'; return; }
 
-    try {
-      const pdf = await pdfjsLib.getDocument(url).promise;
-      const total = pdf.numPages;
-      $('#pageTotal').text('/ ' + total);
+  const url = "Norris_Mangaroo_Arch_Portfolio.pdf"; // match your actual filename exactly
+  const flipbookEl = $('#flipbook');
+  const pageCanvases = [];
+  let currentZoom = 1;
 
-      // Render all pages
-      for (let i=1;i<=total;i++){
-        const page = await pdf.getPage(i);
-        const viewport = page.getViewport({scale:1.5});
-        const canvas = document.createElement('canvas');
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-        await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise;
-        const div = document.createElement('div');
-        div.className='page';
-        div.appendChild(canvas);
-        flipbookEl.append(div);
-        pageCanvases.push(canvas);
-      }
+  try {
+    const pdf = await pdfjsLib.getDocument(url).promise;
+    const total = pdf.numPages;
+    $('#pageTotal').text('/ ' + total);
 
-      // Initialize flipbook with first page's size
-      const first = pageCanvases[0];
-      flipbookEl.turn({
-        width: first.width*2,
-        height: first.height,
-        display:'double',
-        autoCenter:true,
-        elevation:50,
-        duration:450
-      });
-
-      function resizeFlipbook() {
-        if (!pageCanvases[0]) return;
-        const scale = (window.innerWidth * 0.9) / (pageCanvases[0].width*2) * currentZoom;
-        flipbookEl.turn('size', pageCanvases[0].width*2*scale, pageCanvases[0].height*scale);
-      }
-
-      // Navigation
-      $('#prev').on('click',()=>flipbookEl.turn('previous'));
-      $('#next').on('click',()=>flipbookEl.turn('next'));
-      $('#pageNum').attr('max',total);
-      $('#pageNum').on('change',function(){
-        const p=Math.max(1,Math.min(total,+this.value||1));
-        flipbookEl.turn('page',p);
-      });
-      flipbookEl.bind('turned',(e,p)=>$('#pageNum').val(p));
-
-      // Zoom
-      $('#zoomIn').on('click',()=>{currentZoom=Math.min(2.5,currentZoom+0.15);resizeFlipbook();});
-      $('#zoomOut').on('click',()=>{currentZoom=Math.max(0.6,currentZoom-0.15);resizeFlipbook();});
-
-      window.addEventListener('resize', resizeFlipbook);
-      resizeFlipbook();
-
-      document.getElementById('message').textContent='Flipbook loaded — enjoy!';
-    } catch(err){
-      document.getElementById('message').textContent='Error rendering PDF.';
-      console.error(err);
+    for (let i=1; i<=total; i++) {
+      const page = await pdf.getPage(i);
+      const viewport = page.getViewport({ scale: 1.5 });
+      const canvas = document.createElement('canvas');
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+      const div = document.createElement('div');
+      div.className = 'page';
+      div.appendChild(canvas);
+      flipbookEl.append(div);
+      pageCanvases.push(canvas);
     }
-  })();
+
+    const first = pageCanvases[0];
+    flipbookEl.turn({
+      width: first.width*2,
+      height: first.height,
+      display:'double',
+      autoCenter:true,
+      elevation:50,
+      duration:450
+    });
+
+    function resizeFlipbook() {
+      if (!pageCanvases[0]) return;
+      const scale = (window.innerWidth*0.9)/(pageCanvases[0].width*2) * currentZoom;
+      flipbookEl.turn('size', pageCanvases[0].width*2*scale, pageCanvases[0].height*scale);
+    }
+
+    $('#prev').on('click',()=>flipbookEl.turn('previous'));
+    $('#next').on('click',()=>flipbookEl.turn('next'));
+    $('#pageNum').attr('max',total);
+    $('#pageNum').on('change', function() {
+      const p=Math.max(1, Math.min(total, +this.value||1));
+      flipbookEl.turn('page', p);
+    });
+    flipbookEl.bind('turned', (e,p)=>$('#pageNum').val(p));
+
+    $('#zoomIn').on('click',()=>{currentZoom=Math.min(2.5,currentZoom+0.15);resizeFlipbook();});
+    $('#zoomOut').on('click',()=>{currentZoom=Math.max(0.6,currentZoom-0.15);resizeFlipbook();});
+
+    window.addEventListener('resize', resizeFlipbook);
+    resizeFlipbook();
+    document.getElementById('message').textContent='Flipbook loaded — enjoy!';
+  } catch(err) {
+    document.getElementById('message').textContent='Error rendering PDF.';
+    console.error(err);
+  }
+})();
 </script>
