@@ -67,6 +67,9 @@
     background:transparent;
     transform-origin: top left;
   }
+  .spread {
+    display:flex;
+  }
   .page {
     background:var(--card);
     overflow:hidden;
@@ -97,7 +100,6 @@
     <span id="pageTotal" style="color:var(--muted);font-weight:600;padding-left:6px">/ 0</span>
     <button id="next" class="btn" aria-label="Next page">›</button>
   </div>
-
   <div style="width:10px"></div>
   <div class="pager" title="View">
     <button id="zoomOut" class="btn" aria-label="Zoom out">−</button>
@@ -111,7 +113,6 @@
 
 <div id="message">Loading flipbook — please wait…</div>
 
-<!-- Libraries -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/0.11/turn.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
@@ -119,7 +120,7 @@
 pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
 
 (async function(){
-  const url = "Norris_Mangaroo_Arch_Portfolio.pdf"; // exact filename
+  const url = "Norris_Mangaroo_Arch_Portfolio.pdf"; 
   const flipbookEl = $('#flipbook');
   const pageCanvases = [];
   let currentZoom = 1;
@@ -129,7 +130,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs
     let total = pdf.numPages;
     $('#pageTotal').text('/ '+total);
 
-    // Render pages
+    // Render pages as canvases
     for(let i=1;i<=total;i++){
       const page = await pdf.getPage(i);
       const viewport = page.getViewport({scale:1.5});
@@ -137,27 +138,38 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs
       canvas.width = viewport.width;
       canvas.height = viewport.height;
       await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise;
-
-      const div = document.createElement('div');
-      div.className='page';
-      div.appendChild(canvas);
-      flipbookEl.append(div);
       pageCanvases.push(canvas);
     }
 
-    // Add blank page at start if total pages is odd
+    // Prepend blank page if odd
     if(total % 2 !== 0){
-      const blankDiv = document.createElement('div');
-      blankDiv.className='page';
-      flipbookEl.prepend(blankDiv);
-      total += 1;
+      pageCanvases.unshift(null);
+      total +=1;
     }
 
-    // Initialize flipbook with natural width/height
-    const first = pageCanvases[0];
+    // Wrap canvases into spreads (2 pages per spread)
+    for(let i=0;i<pageCanvases.length;i+=2){
+      const spreadDiv = document.createElement('div');
+      spreadDiv.className='spread';
+
+      const leftPage = document.createElement('div');
+      leftPage.className='page';
+      if(pageCanvases[i]) leftPage.appendChild(pageCanvases[i]);
+
+      const rightPage = document.createElement('div');
+      rightPage.className='page';
+      if(pageCanvases[i+1]) rightPage.appendChild(pageCanvases[i+1]);
+
+      spreadDiv.appendChild(leftPage);
+      spreadDiv.appendChild(rightPage);
+      flipbookEl.append(spreadDiv);
+    }
+
+    // Initialize Turn.js
+    const firstSpread = flipbookEl.find('.spread')[0];
     flipbookEl.turn({
-      width:first.width*2,
-      height:first.height,
+      width:firstSpread.scrollWidth,
+      height:firstSpread.scrollHeight,
       display:'double',
       autoCenter:true,
       elevation:50,
@@ -167,35 +179,32 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs
     // Navigation
     $('#prev').on('click',()=>flipbookEl.turn('previous'));
     $('#next').on('click',()=>flipbookEl.turn('next'));
-    $('#pageNum').attr('max',total);
+    $('#pageNum').attr('max',flipbookEl.turn('pages'));
     $('#pageNum').on('change',function(){
-      const p=Math.max(1,Math.min(total,Number(this.value)||1));
+      const p=Math.max(1,Math.min(flipbookEl.turn('pages'),Number(this.value)||1));
       flipbookEl.turn('page',p);
     });
     flipbookEl.bind('turned',function(e,p){ $('#pageNum').val(p); });
 
-    // Zoom via container scaling
+    // Zoom
     function applyZoom(){
       flipbookEl.css('transform','scale('+currentZoom+')');
     }
     $('#zoomIn').on('click',()=>{ currentZoom=Math.min(2.5,(currentZoom+0.15).toFixed(2)); applyZoom(); });
     $('#zoomOut').on('click',()=>{ currentZoom=Math.max(0.6,(currentZoom-0.15).toFixed(2)); applyZoom(); });
 
-    // Responsive: fit width & height
+    // Responsive
     function fitToScreen(){
       const winW = window.innerWidth*0.95;
       const winH = window.innerHeight*0.85;
-      const pageW = first.width*2;
-      const pageH = first.height;
-      currentZoom = Math.min(winW/pageW, winH/pageH);
+      const spread = flipbookEl.find('.spread')[0];
+      currentZoom = Math.min(winW/spread.scrollWidth, winH/spread.scrollHeight);
       applyZoom();
     }
     $(window).on('resize',fitToScreen);
     fitToScreen();
 
-    // Start at first real page
-    flipbookEl.turn('page', total % 2 === 0 ? 1 : 2);
-
+    flipbookEl.turn('page',1);
     $('#message').text('Flipbook loaded — enjoy!');
 
   }catch(err){
