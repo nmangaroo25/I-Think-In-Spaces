@@ -59,29 +59,8 @@
         const total = pdf.numPages;
         $('#pageTotal').text('/ ' + total);
 
-        // prepare empty placeholders
-        for (let i = 1; i <= total; i++) {
-          const pageDiv = document.createElement('div');
-          pageDiv.className = 'page';
-          pageDiv.setAttribute('data-page', i);
-          pageDiv.textContent = 'Loading…';
-          flipbookEl.append(pageDiv);
-        }
-
-        // init turn.js
-        flipbookEl.turn({
-          width: Math.min(window.innerWidth * 0.88, 1200),
-          height: Math.min(window.innerHeight * 0.82, 800),
-          autoCenter: true,
-          display: 'double',
-          elevation: 50,
-          duration: 500
-        });
-
-        // render a page to <img>
+        // pre-render first 2 pages before init
         async function renderPage(num) {
-          const div = flipbookEl.find(`[data-page='${num}']`)[0];
-          if (!div || div.hasChildNodes()) return; // already rendered
           const page = await pdf.getPage(num);
           const viewport = page.getViewport({ scale: 1.2 });
           const canvas = document.createElement('canvas');
@@ -95,20 +74,61 @@
           img.style.width = '100%';
           img.style.height = 'auto';
 
-          div.textContent = '';
-          div.appendChild(img);
+          const pageDiv = document.createElement('div');
+          pageDiv.className = 'page';
+          pageDiv.setAttribute('data-page', num);
+          pageDiv.appendChild(img);
+          return pageDiv;
         }
 
-        // load first few pages
-        for (let i = 1; i <= Math.min(4,total); i++) renderPage(i);
+        // render first 2 pages
+        const firstDiv = await renderPage(1);
+        const secondDiv = (total >= 2) ? await renderPage(2) : null;
 
-        // when page is turned, load neighbors
+        flipbookEl.append(firstDiv);
+        if (secondDiv) flipbookEl.append(secondDiv);
+
+        // init turn.js with double-page mode
+        const flipW = Math.min(window.innerWidth * 0.88, firstDiv.firstChild.naturalWidth * 2 * 0.9);
+        const flipH = Math.min(window.innerHeight * 0.82, firstDiv.firstChild.naturalHeight * 0.95);
+
+        flipbookEl.turn({
+          width: flipW,
+          height: flipH,
+          autoCenter: true,
+          display: 'double',
+          elevation: 50,
+          duration: 500,
+          pages: total
+        });
+
+        // placeholder pages for rest
+        for (let i = 3; i <= total; i++) {
+          const pageDiv = document.createElement('div');
+          pageDiv.className = 'page';
+          pageDiv.setAttribute('data-page', i);
+          pageDiv.textContent = 'Loading…';
+          flipbookEl.turn('addPage', pageDiv, i);
+        }
+
+        // lazy load on demand
+        async function ensureRendered(p) {
+          if (p < 1 || p > total) return;
+          const div = flipbookEl.find(`[data-page='${p}']`)[0];
+          if (!div || div.hasChildNodes()) return;
+          const newDiv = await renderPage(p);
+          div.textContent = '';
+          div.appendChild(newDiv.firstChild);
+        }
+
         flipbookEl.bind('turned', (e, page) => {
           $('#pageNum').val(page);
-          [page-2,page-1,page,page+1,page+2].forEach(p=>{
-            if (p>=1 && p<=total) renderPage(p);
-          });
+          [page-2,page-1,page,page+1,page+2].forEach(ensureRendered);
         });
+
+        // preload first neighbors
+        ensureRendered(3);
+        ensureRendered(4);
 
         // controls
         $('#prev').on('click', () => flipbookEl.turn('previous'));
