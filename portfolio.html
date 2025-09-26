@@ -1,129 +1,86 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Norris Mangaroo — Portfolio (Flipbook)</title>
-  <style>
-    :root{--bg:#0f1720;--card:#fff;--muted:#8892a6}
-    html,body{height:100%;margin:0;font-family:Inter,Helvetica,Arial,sans-serif;background:var(--bg);color:#fff}
-    a.back {position:fixed;left:18px;top:18px;background:#fff;color:#111;padding:8px 12px;border-radius:8px;text-decoration:none;font-weight:600;z-index:9999}
-    .topbar{position:fixed;right:18px;top:18px;display:flex;gap:8px;align-items:center;z-index:9999}
-    .btn{background:#fff;color:#111;border:none;padding:8px 10px;border-radius:8px;font-weight:600;cursor:pointer}
-    .pager{display:flex;gap:6px;align-items:center;background:rgba(255,255,255,0.04);padding:6px 8px;border-radius:8px}
-    #flipbook-wrap{height:100vh;display:flex;align-items:center;justify-content:center;padding:64px 24px;box-sizing:border-box}
-    #flipbook{box-shadow:0 10px 30px rgba(2,6,23,0.7);background:transparent}
-    .page{background:var(--card);overflow:hidden;display:flex;align-items:center;justify-content:center}
-    #message{position:fixed;left:18px;bottom:18px;background:rgba(255,255,255,0.06);padding:8px 12px;border-radius:8px;color:var(--muted);font-size:13px;max-width:45%}
-    #diag{position:fixed;right:18px;bottom:18px;background:rgba(255,255,255,0.03);padding:8px 12px;border-radius:8px;color:#ddd;font-size:12px;max-width:40%;max-height:36vh;overflow:auto}
-    #diag b{color:#fff}
-    @media (max-width:900px){
-      .topbar{right:12px;gap:6px}
-      a.back{left:12px;top:12px;padding:6px 10px}
-      #message, #diag{max-width:80%}
-    }
-  </style>
-</head>
-<body>
-  <a class="back" href="https://nmangaroo25.github.io/I-Think-In-Spaces/#home">← Back to Home</a>
+<script>
+  const LOG = (msg) => console.log('[flipbook] ' + msg);
 
-  <div class="topbar" role="toolbar" aria-label="Flipbook controls">
-    <div class="pager" title="Navigation">
-      <button id="prev" class="btn" aria-label="Previous page">‹</button>
-      <input id="pageNum" type="number" min="1" value="1" style="width:64px;padding:6px;border-radius:6px;border:none;font-weight:700" />
-      <span id="pageTotal" style="color:var(--muted);font-weight:600;padding-left:6px">/ 0</span>
-      <button id="next" class="btn" aria-label="Next page">›</button>
-    </div>
+  (async function main(){
+    if (typeof $ === 'undefined') { document.getElementById('message').textContent = 'Error: jQuery missing.'; return; }
+    if (typeof pdfjsLib === 'undefined') { document.getElementById('message').textContent = 'Error: pdf.js missing.'; return; }
+    if (typeof $.fn.turn === 'undefined') { document.getElementById('message').textContent = 'Error: turn.js missing.'; return; }
 
-    <div style="width:10px"></div>
-    <div class="pager" title="View">
-      <button id="zoomOut" class="btn" aria-label="Zoom out">−</button>
-      <button id="zoomIn" class="btn" aria-label="Zoom in">＋</button>
-    </div>
-  </div>
+    LOG('All libraries present. Rendering…');
+    const url = "Norris_Mangaroo_Arch_Portfolio.pdf";
+    const flipbookEl = $('#flipbook');
+    const pageCanvases = [];
+    let currentZoom = 1;
 
-  <div id="flipbook-wrap">
-    <div id="flipbook" aria-live="polite" role="application" aria-label="Portfolio flipbook"></div>
-  </div>
+    try {
+      const pdf = await pdfjsLib.getDocument(url).promise;
+      const total = pdf.numPages;
+      $('#pageTotal').text('/ ' + total);
 
-  <div id="message">Loading flipbook — if nothing appears within 6s, open your browser console or check the diagnostics panel (bottom-right).</div>
-  <div id="diag"><b>Diagnostics:</b><br><ul id="log" style="padding-left:18px;margin:6px 0 0 0;color:#cbd5e1"></ul></div>
-
-  <noscript>
-    <div style="position:fixed;left:18px;bottom:64px;background:#fff;color:#111;padding:8px 12px;border-radius:8px">
-      JavaScript required — PDF viewer needs JS enabled.
-    </div>
-  </noscript>
-
-  <!-- jQuery + pdf.js -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-  <!-- local Turn.js -->
-  <script src="js/turn.min.js"></script>
-
-  <script>
-    const LOG = (msg) => {
-      const ul = document.getElementById('log');
-      const li = document.createElement('li');
-      li.textContent = msg;
-      ul.appendChild(li);
-      console.log('[flipbook] ' + msg);
-    };
-
-    (async function main(){
-      if (typeof $ === 'undefined') { document.getElementById('message').textContent = 'Error: jQuery missing.'; return; }
-      if (typeof pdfjsLib === 'undefined') { document.getElementById('message').textContent = 'Error: pdf.js missing.'; return; }
-      if (typeof $.fn.turn === 'undefined') { document.getElementById('message').textContent = 'Error: turn.js missing.'; return; }
-
-      LOG('All libraries present. Rendering…');
-      const url = "Norris_Mangaroo_Arch_Portfolio.pdf";
-      const flipbookEl = $('#flipbook');
-      const pageCanvases = [];
-      let currentZoom = 1;
-
-      try {
-        const pdf = await pdfjsLib.getDocument(url).promise;
-        const total = pdf.numPages;
-        $('#pageTotal').text('/ ' + total);
-
-        for (let i=1;i<=total;i++){
-          const page = await pdf.getPage(i);
-          const viewport = page.getViewport({scale:1.35});
-          const canvas = document.createElement('canvas');
-          canvas.width = viewport.width;
-          canvas.height = viewport.height;
-          await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise;
-          const div = document.createElement('div'); div.className='page'; div.appendChild(canvas);
-          flipbookEl.append(div);
-          pageCanvases.push(canvas);
-        }
-
-        const first = pageCanvases[0];
-        flipbookEl.turn({
-          width: Math.min(window.innerWidth*0.88, first.width*2*0.9),
-          height: Math.min(window.innerHeight*0.82, first.height*0.95),
-          display:'double',
-          autoCenter:true,
-          elevation:50,
-          duration:450
-        });
-
-        $('#prev').on('click',()=>flipbookEl.turn('previous'));
-        $('#next').on('click',()=>flipbookEl.turn('next'));
-        $('#pageNum').attr('max',total);
-        $('#pageNum').on('change',function(){const p=Math.max(1,Math.min(total,+this.value||1));flipbookEl.turn('page',p);});
-        flipbookEl.bind('turned',(e,p)=>$('#pageNum').val(p));
-
-        function applyZoom(){pageCanvases.forEach(c=>{c.style.transformOrigin='top left';c.style.transform='scale('+currentZoom+')';});}
-        $('#zoomIn').on('click',()=>{currentZoom=Math.min(2.5,currentZoom+0.15);applyZoom();});
-        $('#zoomOut').on('click',()=>{currentZoom=Math.max(0.6,currentZoom-0.15);applyZoom();});
-
-        document.getElementById('message').textContent='Flipbook loaded — enjoy!';
-      } catch(err){
-        document.getElementById('message').textContent='Error rendering PDF.';
-        console.error(err);
+      // Render all pages
+      for (let i=1;i<=total;i++){
+        const page = await pdf.getPage(i);
+        const viewport = page.getViewport({scale:1.5}); // higher base scale for crispness
+        const canvas = document.createElement('canvas');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise;
+        const div = document.createElement('div'); div.className='page'; div.appendChild(canvas);
+        flipbookEl.append(div);
+        pageCanvases.push(canvas);
       }
-    })();
-  </script>
-</body>
-</html>
+
+      // --- Proper sizing ---
+      function resizeFlipbook() {
+        const first = pageCanvases[0];
+        const pageRatio = first.height / first.width;
+        const maxW = window.innerWidth * 0.88;
+        const maxH = window.innerHeight * 0.82;
+
+        // two pages side by side → width doubled
+        let targetW = first.width * 2;
+        let targetH = first.height;
+
+        const scaleW = maxW / targetW;
+        const scaleH = maxH / targetH;
+        const scale = Math.min(scaleW, scaleH);
+
+        flipbookEl.turn('size', targetW * scale * currentZoom, targetH * scale * currentZoom);
+      }
+
+      // Initialize turn.js
+      const first = pageCanvases[0];
+      flipbookEl.turn({
+        width: first.width*2,   // temp
+        height: first.height,   // temp
+        display:'double',
+        autoCenter:true,
+        elevation:50,
+        duration:450
+      });
+
+      // Controls
+      $('#prev').on('click',()=>flipbookEl.turn('previous'));
+      $('#next').on('click',()=>flipbookEl.turn('next'));
+      $('#pageNum').attr('max',total);
+      $('#pageNum').on('change',function(){const p=Math.max(1,Math.min(total,+this.value||1));flipbookEl.turn('page',p);});
+      flipbookEl.bind('turned',(e,p)=>$('#pageNum').val(p));
+
+      // --- Zoom (scale container instead of canvases) ---
+      function applyZoom() {
+        resizeFlipbook();
+      }
+      $('#zoomIn').on('click',()=>{currentZoom=Math.min(2.5,currentZoom+0.15);applyZoom();});
+      $('#zoomOut').on('click',()=>{currentZoom=Math.max(0.6,currentZoom-0.15);applyZoom();});
+
+      // Resize on window resize
+      window.addEventListener('resize', resizeFlipbook);
+      resizeFlipbook();
+
+      document.getElementById('message').textContent='Flipbook loaded — enjoy!';
+    } catch(err){
+      document.getElementById('message').textContent='Error rendering PDF.';
+      console.error(err);
+    }
+  })();
+</script>
