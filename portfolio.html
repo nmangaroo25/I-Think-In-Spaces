@@ -20,23 +20,22 @@
 <body>
   <a class="back" href="https://nmangaroo25.github.io/I-Think-In-Spaces/#home">← Back to Home</a>
 
-  <div class="topbar" role="toolbar" aria-label="Flipbook controls">
-    <div class="pager" title="Navigation">
-      <button id="prev" class="btn" aria-label="Previous page">‹</button>
+  <div class="topbar">
+    <div class="pager">
+      <button id="prev" class="btn">‹</button>
       <input id="pageNum" type="number" min="1" value="1" style="width:64px;padding:6px;border-radius:6px;border:none;font-weight:700" />
       <span id="pageTotal" style="color:var(--muted);font-weight:600;padding-left:6px">/ 0</span>
-      <button id="next" class="btn" aria-label="Next page">›</button>
+      <button id="next" class="btn">›</button>
     </div>
-
     <div style="width:10px"></div>
-    <div class="pager" title="View">
-      <button id="zoomOut" class="btn" aria-label="Zoom out">−</button>
-      <button id="zoomIn" class="btn" aria-label="Zoom in">＋</button>
+    <div class="pager">
+      <button id="zoomOut" class="btn">−</button>
+      <button id="zoomIn" class="btn">＋</button>
     </div>
   </div>
 
   <div id="flipbook-wrap">
-    <div id="flipbook" aria-live="polite" role="application" aria-label="Portfolio flipbook"></div>
+    <div id="flipbook"></div>
   </div>
 
   <div id="message">Loading portfolio…</div>
@@ -48,91 +47,89 @@
 
   <script>
     (async function(){
-      const url = "Norris_Mangaroo_Arch_Portfolio.pdf"; // must match your filename
+      const url = "Norris_Mangaroo_Arch_Portfolio.pdf";
       const flipbookEl = $('#flipbook');
       let currentZoom = 1;
+
+      function renderPageToDiv(page, scale=1.2) {
+        return page.getViewport({ scale }).width; // for debug
+      }
 
       try {
         const pdf = await pdfjsLib.getDocument(url).promise;
         const total = pdf.numPages;
         $('#pageTotal').text('/ ' + total);
 
-        // helper: render PDF page into <div class="page"><img/></div>
         async function renderPage(num) {
           const page = await pdf.getPage(num);
           const viewport = page.getViewport({ scale: 1.2 });
           const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
           canvas.width = viewport.width;
           canvas.height = viewport.height;
-          await page.render({ canvasContext: ctx, viewport }).promise;
+          await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
 
           const img = document.createElement('img');
           img.src = canvas.toDataURL('image/jpeg', 0.9);
           img.style.width = '100%';
           img.style.height = 'auto';
 
-          const pageDiv = document.createElement('div');
-          pageDiv.className = 'page';
-          pageDiv.setAttribute('data-page', num);
-          pageDiv.appendChild(img);
-          return pageDiv;
+          const div = document.createElement('div');
+          div.className = 'page';
+          div.setAttribute('data-page', num);
+          div.appendChild(img);
+          return div;
         }
 
-        // Render first 2 pages *before* initializing turn.js
-        const firstDiv = await renderPage(1);
-        const secondDiv = (total >= 2) ? await renderPage(2) : null;
-        flipbookEl.append(firstDiv);
-        if (secondDiv) flipbookEl.append(secondDiv);
+        // Render first 2 pages fully before init
+        const page1 = await renderPage(1);
+        flipbookEl.append(page1);
+        if (total >= 2) {
+          const page2 = await renderPage(2);
+          flipbookEl.append(page2);
+        }
 
-        // Initialize turn.js AFTER pages exist
-        const flipW = Math.min(window.innerWidth * 0.88, firstDiv.firstChild.naturalWidth * 2 * 0.9);
-        const flipH = Math.min(window.innerHeight * 0.82, firstDiv.firstChild.naturalHeight * 0.95);
-
+        // Init Turn.js only after we have real spreads
+        const w = page1.firstChild.naturalWidth * 2 * 0.9;
+        const h = page1.firstChild.naturalHeight * 0.95;
         flipbookEl.turn({
-          width: flipW,
-          height: flipH,
+          width: Math.min(window.innerWidth*0.88, w),
+          height: Math.min(window.innerHeight*0.82, h),
+          display: 'double',
           autoCenter: true,
-          display: 'double',   // force spreads
-          elevation: 50,
-          duration: 500,
           pages: total
         });
 
-        // Insert placeholder pages into turn.js
-        for (let i = 3; i <= total; i++) {
-          const placeholder = document.createElement('div');
-          placeholder.className = 'page';
-          placeholder.setAttribute('data-page', i);
-          placeholder.textContent = 'Loading…';
-          flipbookEl.turn('addPage', placeholder, i);
+        // Add placeholders
+        for (let i=3; i<=total; i++) {
+          const ph = document.createElement('div');
+          ph.className = 'page';
+          ph.setAttribute('data-page', i);
+          ph.textContent = '…';
+          flipbookEl.turn('addPage', ph, i);
         }
 
-        // Lazy-load when turning
-        async function ensureRendered(p) {
-          if (p < 1 || p > total) return;
+        // Lazy load pages as needed
+        async function ensurePage(p) {
+          if (p<1 || p>total) return;
           const div = flipbookEl.find(`[data-page='${p}']`)[0];
-          if (!div || div.hasChildNodes() && div.firstChild.tagName === 'IMG') return;
-          const rendered = await renderPage(p);
+          if (!div || (div.firstChild && div.firstChild.tagName==='IMG')) return;
+          const ready = await renderPage(p);
           div.textContent = '';
-          div.appendChild(rendered.firstChild);
+          div.appendChild(ready.firstChild);
         }
 
-        flipbookEl.bind('turned', (e, page) => {
-          $('#pageNum').val(page);
-          [page-2, page-1, page, page+1, page+2].forEach(ensureRendered);
+        flipbookEl.bind('turned', (e, p) => {
+          $('#pageNum').val(p);
+          [p-2,p-1,p,p+1,p+2].forEach(ensurePage);
         });
-
-        // Preload next two
-        ensureRendered(3);
-        ensureRendered(4);
+        ensurePage(3); ensurePage(4);
 
         // Controls
         $('#prev').on('click', () => flipbookEl.turn('previous'));
         $('#next').on('click', () => flipbookEl.turn('next'));
         $('#pageNum').attr('max', total);
         $('#pageNum').on('change', function(){
-          const p = Math.max(1, Math.min(total, Number(this.value)||1));
+          const p = Math.max(1, Math.min(total, +this.value||1));
           flipbookEl.turn('page', p);
         });
 
@@ -142,11 +139,11 @@
             this.style.transform='scale('+currentZoom+')';
           });
         }
-        $('#zoomIn').on('click', () => { currentZoom = Math.min(2.5, +(currentZoom+0.15).toFixed(2)); applyZoom(); });
-        $('#zoomOut').on('click', () => { currentZoom = Math.max(0.6, +(currentZoom-0.15).toFixed(2)); applyZoom(); });
+        $('#zoomIn').on('click', () => { currentZoom=Math.min(2.5, currentZoom+0.2); applyZoom(); });
+        $('#zoomOut').on('click', () => { currentZoom=Math.max(0.6, currentZoom-0.2); applyZoom(); });
 
         document.getElementById('message').textContent = '';
-      } catch (err) {
+      } catch(err) {
         console.error(err);
         document.getElementById('message').textContent = 'Error loading flipbook.';
       }
