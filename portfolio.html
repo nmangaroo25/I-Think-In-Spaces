@@ -40,9 +40,6 @@
       <button id="zoomOut" class="btn" aria-label="Zoom out">−</button>
       <button id="zoomIn" class="btn" aria-label="Zoom in">＋</button>
     </div>
-
-    <div style="width:10px"></div>
-    <a id="download" class="btn" download>Download</a>
   </div>
 
   <div id="flipbook-wrap">
@@ -54,12 +51,11 @@
 
   <noscript>
     <div style="position:fixed;left:18px;bottom:64px;background:#fff;color:#111;padding:8px 12px;border-radius:8px">
-      JavaScript required — <a href="Norris_Mangaroo_Arch_Portfolio.pdf" download>download the PDF</a>
+      JavaScript required — PDF viewer needs JS enabled.
     </div>
   </noscript>
 
   <script>
-    // Robust script loader with fallbacks and diagnostics.
     const LOG = (msg) => {
       const ul = document.getElementById('log');
       const li = document.createElement('li');
@@ -68,179 +64,94 @@
       console.log('[flipbook] ' + msg);
     };
 
-    function loadScript(url, attrs = {}) {
+    function loadScript(url) {
       return new Promise((resolve, reject) => {
         const s = document.createElement('script');
-        s.src = url;
-        s.async = true;
-        for (const k in attrs) s.setAttribute(k, attrs[k]);
+        s.src = url; s.async = true;
         s.onload = () => resolve(url);
         s.onerror = () => reject(new Error('Failed to load: ' + url));
         document.head.appendChild(s);
       });
     }
 
-    async function tryUrls(name, urls, attrs) {
+    async function tryUrls(name, urls) {
       for (const u of urls) {
-        try {
-          LOG(`Attempting ${name} from: ${u}`);
-          await loadScript(u, attrs);
-          LOG(`Loaded ${name} from: ${u}`);
-          return u;
-        } catch (err) {
-          LOG(`Failed to load ${name} from: ${u}`);
-        }
+        try { LOG(`Trying ${name}: ${u}`); await loadScript(u); LOG(`Loaded ${name}`); return; }
+        catch(e){ LOG(`Failed ${name}: ${u}`); }
       }
-      throw new Error(`${name} failed to load from all fallbacks`);
+      throw new Error(name+' failed to load');
     }
 
-    (async function main() {
-      const jQueryUrls = [
+    (async function main(){
+      const jQueryUrls=[
         'https://code.jquery.com/jquery-3.6.0.min.js',
-        'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js',
-        'https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js'
+        'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js'
       ];
-
-      const turnUrls = [
+      const turnUrls=[
         'https://cdnjs.cloudflare.com/ajax/libs/turn.js/4.1.0/turn.min.js',
-        'https://cdnjs.cloudflare.com/ajax/libs/turn.js/0.11/turn.min.js',
         'https://cdn.jsdelivr.net/npm/turn.js@4.1.0/turn.min.js'
       ];
-
-      const pdfJsUrls = [
+      const pdfJsUrls=[
         'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js',
         'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.16.105/build/pdf.min.js'
       ];
 
-      // 1) load jQuery
-      try {
-        await tryUrls('jQuery', jQueryUrls);
-      } catch (err) {
-        document.getElementById('message').textContent = 'Error: jQuery failed to load from all CDNs. See diagnostics.';
-        return;
-      }
-
-      // small delay to ensure $ binding (rare race)
+      await tryUrls('jQuery', jQueryUrls);
       await new Promise(r=>setTimeout(r,50));
+      await tryUrls('turn.js', turnUrls);
+      await tryUrls('pdf.js', pdfJsUrls);
 
-      // sanity
-      if (typeof window.jQuery === 'undefined') {
-        document.getElementById('message').textContent = 'Error: jQuery is not available after load attempts.';
-        LOG('window.jQuery is undefined after attempted loads.');
-        return;
+      if (typeof $.fn.turn==='undefined' || typeof pdfjsLib==='undefined') {
+        document.getElementById('message').textContent='Error: Libraries missing.'; return;
       }
 
-      // 2) load turn.js
+      LOG('All libraries loaded. Rendering…');
+      const url="Norris_Mangaroo_Arch_Portfolio.pdf";
+      const flipbookEl=$('#flipbook');
+      const pageCanvases=[];
+      let currentZoom=1;
+
       try {
-        await tryUrls('turn.js', turnUrls);
-      } catch (err) {
-        document.getElementById('message').textContent = 'Error: turn.js failed to load from all CDNs. See diagnostics.';
-        return;
-      }
+        const pdf=await pdfjsLib.getDocument(url).promise;
+        const total=pdf.numPages;
+        $('#pageTotal').text('/ '+total);
 
-      // 3) load pdf.js
-      try {
-        const usedPdf = await tryUrls('pdf.js', pdfJsUrls);
-        // set worker explicitly to help pdf.js
-        if (window.pdfjsLib) {
-          const worker = usedPdf.replace(/pdf(\.min)?\.js$/,'pdf.worker.min.js');
-          pdfjsLib.GlobalWorkerOptions.workerSrc = worker;
-          LOG('pdf.worker set to: ' + worker);
+        for (let i=1;i<=total;i++){
+          const page=await pdf.getPage(i);
+          const viewport=page.getViewport({scale:1.35});
+          const canvas=document.createElement('canvas');
+          canvas.width=viewport.width; canvas.height=viewport.height;
+          await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise;
+          const div=document.createElement('div'); div.className='page'; div.appendChild(canvas);
+          flipbookEl.append(div);
+          pageCanvases.push(canvas);
         }
-      } catch (err) {
-        document.getElementById('message').textContent = 'Error: pdf.js failed to load from all CDNs. See diagnostics.';
-        return;
+
+        const first=pageCanvases[0];
+        flipbookEl.turn({
+          width:Math.min(window.innerWidth*0.88, first.width*2*0.9),
+          height:Math.min(window.innerHeight*0.82, first.height*0.95),
+          display:'double',
+          autoCenter:true,
+          elevation:50,
+          duration:450
+        });
+
+        $('#prev').on('click',()=>flipbookEl.turn('previous'));
+        $('#next').on('click',()=>flipbookEl.turn('next'));
+        $('#pageNum').attr('max',total);
+        $('#pageNum').on('change',function(){const p=Math.max(1,Math.min(total,+this.value||1));flipbookEl.turn('page',p);});
+        flipbookEl.bind('turned',(e,p)=>$('#pageNum').val(p));
+
+        function applyZoom(){pageCanvases.forEach(c=>{c.style.transformOrigin='top left';c.style.transform='scale('+currentZoom+')';});}
+        $('#zoomIn').on('click',()=>{currentZoom=Math.min(2.5,currentZoom+0.15);applyZoom();});
+        $('#zoomOut').on('click',()=>{currentZoom=Math.max(0.6,currentZoom-0.15);applyZoom();});
+
+        document.getElementById('message').textContent='Flipbook loaded — enjoy!';
+      } catch(err){
+        document.getElementById('message').textContent='Error rendering PDF.';
+        console.error(err);
       }
-
-      // verify turn and pdfjs present
-      if (typeof $.fn.turn === 'undefined') {
-        document.getElementById('message').textContent = 'Error: turn.js is loaded but $.fn.turn is undefined. See diagnostics.';
-        LOG('$.fn.turn is undefined (turn.js may be incompatible).');
-        return;
-      }
-      if (typeof pdfjsLib === 'undefined') {
-        document.getElementById('message').textContent = 'Error: pdf.js is not available after load attempts.';
-        LOG('pdfjsLib undefined.');
-        return;
-      }
-
-      LOG('All libraries present. Initializing flipbook...');
-
-      // === PDF rendering + turn.js initialization ===
-      const url = "Norris_Mangaroo_Arch_Portfolio.pdf"; // exact filename in repo
-      const flipbookEl = $('#flipbook');
-      const pageCanvases = [];
-      let currentZoom = 1;
-      const baseRenderScale = 1.35;
-
-      async function renderPdfToFlipbook() {
-        try {
-          const loadingTask = pdfjsLib.getDocument(url);
-          const pdf = await loadingTask.promise;
-          const total = pdf.numPages;
-          $('#pageTotal').text('/ ' + total);
-          $('#download').attr('href', url);
-
-          for (let i = 1; i <= total; ++i) {
-            const page = await pdf.getPage(i);
-            const scale = baseRenderScale;
-            const viewport = page.getViewport({ scale: scale });
-            const canvas = document.createElement('canvas');
-            canvas.width = viewport.width;
-            canvas.height = viewport.height;
-            canvas.style.maxWidth = '100%';
-            canvas.style.height = 'auto';
-            const ctx = canvas.getContext('2d');
-
-            await page.render({ canvasContext: ctx, viewport: viewport }).promise;
-
-            const pageDiv = document.createElement('div');
-            pageDiv.className = 'page';
-            pageDiv.appendChild(canvas);
-            flipbookEl.append(pageDiv);
-            pageCanvases.push(canvas);
-          }
-
-          // Use first page to size flipbook
-          const first = pageCanvases[0];
-          const flipW = Math.min(window.innerWidth * 0.88, first.width * 2 * 0.9);
-          const flipH = Math.min(window.innerHeight * 0.82, first.height * 0.95);
-
-          // initialize turn.js (two-page spread)
-          flipbookEl.turn({
-            width: flipW,
-            height: flipH,
-            autoCenter: true,
-            display: 'double',
-            elevation: 50,
-            duration: 450
-          });
-
-          $('#prev').on('click', () => flipbookEl.turn('previous'));
-          $('#next').on('click', () => flipbookEl.turn('next'));
-          $('#pageNum').attr('max', total);
-          $('#pageNum').on('change', function(){ const p = Math.max(1, Math.min(total, Number(this.value)||1)); flipbookEl.turn('page', p); });
-          flipbookEl.bind('turned', function(e, page) { $('#pageNum').val(page); });
-
-          function applyZoom() {
-            pageCanvases.forEach(c => { c.style.transformOrigin = 'top left'; c.style.transform = 'scale(' + currentZoom + ')'; });
-          }
-          $('#zoomIn').on('click', function(){ currentZoom = Math.min(2.5, +(currentZoom + 0.15).toFixed(2)); applyZoom(); });
-          $('#zoomOut').on('click', function(){ currentZoom = Math.max(0.6, +(currentZoom - 0.15).toFixed(2)); applyZoom(); });
-
-          flipbookEl.turn('page', 1);
-          document.getElementById('message').textContent = 'Flipbook loaded — enjoy!';
-          LOG('Flipbook ready. pages=' + total);
-        } catch (err) {
-          document.getElementById('message').textContent = 'Error rendering PDF/flipbook. See console/diagnostics.';
-          LOG('Render error: ' + (err && err.message ? err.message : err));
-          console.error(err);
-        }
-      }
-
-      // start rendering
-      renderPdfToFlipbook();
-
     })();
   </script>
 </body>
