@@ -5,32 +5,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Norris Mangaroo – Portfolio</title>
 
-  <!-- DearFlip CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dearflip@1.0.0/dist/dearflip.min.css">
+  <!-- 3D FlipBook CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@3dflipbook/dflip/dist/dflip.min.css">
 
-  <!-- DearFlip JS -->
-  <script src="https://cdn.jsdelivr.net/npm/dearflip@1.0.0/dist/dearflip.min.js"></script>
+  <!-- 3D FlipBook JS -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@3dflipbook/dflip/dist/dflip.min.js"></script>
 
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
       margin: 0;
       padding: 0;
+      background: #f5f5f5;
+      font-family: Arial, sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
 
     h1 {
-      text-align: center;
       margin: 20px 0;
     }
 
     .flipbook-container {
       width: 90%;
       max-width: 1000px;
-      margin: 0 auto 40px;
+      height: 700px;
+      margin-bottom: 40px;
     }
   </style>
 </head>
@@ -38,17 +39,19 @@
 
   <h1>Norris Mangaroo – Portfolio</h1>
 
-  <div class="flipbook-container">
-    <!-- Embed your PDF as flipbook -->
-    <div class="_df_book"
-         source="https://nmangaroo25.github.io/I-Think-In-Spaces/Norris_Mangaroo_Arch_Portfolio.pdf"
-         width="1000"
-         height="600"
-         page="1"
-         zoom="true"
-         fullscreen="true">
-    </div>
-  </div>
+  <div class="flipbook-container" id="flipbook"></div>
+
+  <script>
+    jQuery(document).ready(function () {
+      $("#flipbook").flipBook({
+        pdf: "Norris_Mangaroo_Arch_Portfolio.pdf",
+        template: {
+          sounds: false,
+          htmlLoader: "Loading Portfolio..."
+        }
+      });
+    });
+  </script>
 
 </body>
 </html>
