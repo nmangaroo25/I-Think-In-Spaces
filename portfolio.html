@@ -20,7 +20,7 @@
       // Render all pages
       for (let i=1;i<=total;i++){
         const page = await pdf.getPage(i);
-        const viewport = page.getViewport({scale:1.5}); // higher base scale for crispness
+        const viewport = page.getViewport({scale:1.5}); // render higher for crispness
         const canvas = document.createElement('canvas');
         canvas.width = viewport.width;
         canvas.height = viewport.height;
@@ -30,50 +30,48 @@
         pageCanvases.push(canvas);
       }
 
-      // --- Proper sizing ---
-      function resizeFlipbook() {
-        const first = pageCanvases[0];
-        const pageRatio = first.height / first.width;
-        const maxW = window.innerWidth * 0.88;
-        const maxH = window.innerHeight * 0.82;
-
-        // two pages side by side → width doubled
-        let targetW = first.width * 2;
-        let targetH = first.height;
-
-        const scaleW = maxW / targetW;
-        const scaleH = maxH / targetH;
-        const scale = Math.min(scaleW, scaleH);
-
-        flipbookEl.turn('size', targetW * scale * currentZoom, targetH * scale * currentZoom);
-      }
-
-      // Initialize turn.js
+      // Initialize turn.js with placeholder sizes
       const first = pageCanvases[0];
       flipbookEl.turn({
-        width: first.width*2,   // temp
-        height: first.height,   // temp
+        width: first.width*2,
+        height: first.height,
         display:'double',
         autoCenter:true,
         elevation:50,
         duration:450
       });
 
+      // --- Fit-to-width sizing ---
+      function resizeFlipbook() {
+        const first = pageCanvases[0];
+        if (!first) return;
+
+        const spreadNaturalW = first.width * 2;
+        const spreadNaturalH = first.height;
+
+        const maxW = window.innerWidth * 0.9; // 90% of viewport width
+        const scale = (maxW / spreadNaturalW) * currentZoom;
+
+        const targetW = spreadNaturalW * scale;
+        const targetH = spreadNaturalH * scale;
+
+        flipbookEl.turn('size', targetW, targetH);
+      }
+
       // Controls
       $('#prev').on('click',()=>flipbookEl.turn('previous'));
       $('#next').on('click',()=>flipbookEl.turn('next'));
       $('#pageNum').attr('max',total);
-      $('#pageNum').on('change',function(){const p=Math.max(1,Math.min(total,+this.value||1));flipbookEl.turn('page',p);});
+      $('#pageNum').on('change',function(){
+        const p=Math.max(1,Math.min(total,+this.value||1));
+        flipbookEl.turn('page',p);
+      });
       flipbookEl.bind('turned',(e,p)=>$('#pageNum').val(p));
 
-      // --- Zoom (scale container instead of canvases) ---
-      function applyZoom() {
-        resizeFlipbook();
-      }
-      $('#zoomIn').on('click',()=>{currentZoom=Math.min(2.5,currentZoom+0.15);applyZoom();});
-      $('#zoomOut').on('click',()=>{currentZoom=Math.max(0.6,currentZoom-0.15);applyZoom();});
+      // Zoom (affects fit-to-width scaling)
+      $('#zoomIn').on('click',()=>{currentZoom=Math.min(2.5,currentZoom+0.15);resizeFlipbook();});
+      $('#zoomOut').on('click',()=>{currentZoom=Math.max(0.6,currentZoom-0.15);resizeFlipbook();});
 
-      // Resize on window resize
       window.addEventListener('resize', resizeFlipbook);
       resizeFlipbook();
 
