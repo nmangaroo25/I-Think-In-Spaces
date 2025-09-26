@@ -5,19 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Norris Mangaroo – Portfolio</title>
 
-  <!-- 3D FlipBook CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@3dflipbook/dflip/dist/dflip.min.css">
-
-  <!-- 3D FlipBook JS -->
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@3dflipbook/dflip/dist/dflip.min.js"></script>
+  <!-- PDF.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 
   <style>
     body {
       margin: 0;
       padding: 0;
-      background: #f5f5f5;
       font-family: Arial, sans-serif;
+      background: #f5f5f5;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -27,11 +23,33 @@
       margin: 20px 0;
     }
 
-    .flipbook-container {
+    #controls {
+      margin: 10px;
+    }
+
+    #controls button {
+      padding: 8px 15px;
+      margin: 0 5px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    #canvas-container {
       width: 90%;
       max-width: 1000px;
       height: 700px;
-      margin-bottom: 40px;
+      overflow: auto;
+      border: 1px solid #ccc;
+      background: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    canvas {
+      display: block;
+      margin: auto;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     }
   </style>
 </head>
@@ -39,17 +57,115 @@
 
   <h1>Norris Mangaroo – Portfolio</h1>
 
-  <div class="flipbook-container" id="flipbook"></div>
+  <!-- Navigation controls -->
+  <div id="controls">
+    <button id="prev">Previous</button>
+    <button id="next">Next</button>
+    <button id="zoom-in">Zoom In</button>
+    <button id="zoom-out">Zoom Out</button>
+    <button id="fullscreen">Fullscreen</button>
+    <button onclick="window.location.href='index.html'">Back to Home</button>
+    <span> Page: <span id="page_num"></span> / <span id="page_count"></span></span>
+  </div>
+
+  <!-- PDF Canvas -->
+  <div id="canvas-container">
+    <canvas id="pdf-render"></canvas>
+  </div>
 
   <script>
-    jQuery(document).ready(function () {
-      $("#flipbook").flipBook({
-        pdf: "Norris_Mangaroo_Arch_Portfolio.pdf",
-        template: {
-          sounds: false,
-          htmlLoader: "Loading Portfolio..."
-        }
+    const url = "Norris_Mangaroo_Arch_Portfolio.pdf"; // your PDF
+
+    let pdfDoc = null,
+        pageNum = 1,
+        pageIsRendering = false,
+        pageNumIsPending = null,
+        scale = 1.2,
+        canvas = document.getElementById("pdf-render"),
+        ctx = canvas.getContext("2d");
+
+    // Render page
+    const renderPage = num => {
+      pageIsRendering = true;
+
+      pdfDoc.getPage(num).then(page => {
+        const viewport = page.getViewport({ scale });
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        const renderCtx = {
+          canvasContext: ctx,
+          viewport
+        };
+
+        page.render(renderCtx).promise.then(() => {
+          pageIsRendering = false;
+
+          if (pageNumIsPending !== null) {
+            renderPage(pageNumIsPending);
+            pageNumIsPending = null;
+          }
+        });
+
+        document.getElementById("page_num").textContent = num;
       });
+    };
+
+    // Queue render
+    const queueRenderPage = num => {
+      if (pageIsRendering) {
+        pageNumIsPending = num;
+      } else {
+        renderPage(num);
+      }
+    };
+
+    // Show Prev Page
+    document.getElementById("prev").addEventListener("click", () => {
+      if (pageNum <= 1) return;
+      pageNum--;
+      queueRenderPage(pageNum);
+    });
+
+    // Show Next Page
+    document.getElementById("next").addEventListener("click", () => {
+      if (pageNum >= pdfDoc.numPages) return;
+      pageNum++;
+      queueRenderPage(pageNum);
+    });
+
+    // Zoom In
+    document.getElementById("zoom-in").addEventListener("click", () => {
+      scale += 0.2;
+      queueRenderPage(pageNum);
+    });
+
+    // Zoom Out
+    document.getElementById("zoom-out").addEventListener("click", () => {
+      if (scale <= 0.6) return;
+      scale -= 0.2;
+      queueRenderPage(pageNum);
+    });
+
+    // Fullscreen
+    document.getElementById("fullscreen").addEventListener("click", () => {
+      const elem = document.getElementById("canvas-container");
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+      } else if (elem.mozRequestFullScreen) { /* Firefox */
+        elem.mozRequestFullScreen();
+      } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari, Opera */
+        elem.webkitRequestFullscreen();
+      } else if (elem.msRequestFullscreen) { /* IE/Edge */
+        elem.msRequestFullscreen();
+      }
+    });
+
+    // Load PDF
+    pdfjsLib.getDocument(url).promise.then(pdfDoc_ => {
+      pdfDoc = pdfDoc_;
+      document.getElementById("page_count").textContent = pdfDoc.numPages;
+      renderPage(pageNum);
     });
   </script>
 
