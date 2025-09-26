@@ -76,13 +76,15 @@
           return div;
         }
 
-        // Pre-render first 6 pages
-        for (let i = 1; i <= Math.min(6,total); i++) {
-          const d = await renderPage(i);
-          flipbookEl.append(d);
+        // Pre-render first 2 pages before init
+        const p1 = await renderPage(1);
+        flipbookEl.append(p1);
+        if (total >= 2) {
+          const p2 = await renderPage(2);
+          flipbookEl.append(p2);
         }
 
-        // Initialize turn.js once first pages exist
+        // Init Turn.js with spreads
         const firstImg = flipbookEl.find('img')[0];
         const flipW = Math.min(window.innerWidth*0.88, firstImg.naturalWidth*2*0.9);
         const flipH = Math.min(window.innerHeight*0.82, firstImg.naturalHeight*0.95);
@@ -97,8 +99,8 @@
           duration: 500
         });
 
-        // Add placeholders for remaining pages
-        for (let i=7; i<=total; i++) {
+        // Add placeholders
+        for (let i=3; i<=total; i++) {
           const ph = document.createElement('div');
           ph.className = 'page';
           ph.setAttribute('data-page', i);
@@ -106,7 +108,7 @@
           flipbookEl.turn('addPage', ph, i);
         }
 
-        // Lazy-load remaining pages as needed
+        // Lazy-load neighbors
         async function ensurePage(p) {
           if (p<1 || p>total) return;
           const div = flipbookEl.find(`[data-page='${p}']`)[0];
@@ -120,6 +122,7 @@
           $('#pageNum').val(p);
           [p-2,p-1,p,p+1,p+2].forEach(ensurePage);
         });
+        ensurePage(3); ensurePage(4);
 
         // Controls
         $('#prev').on('click', () => flipbookEl.turn('previous'));
