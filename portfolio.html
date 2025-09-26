@@ -52,14 +52,12 @@
       const flipbookEl = $('#flipbook');
       let currentZoom = 1;
 
-      if (!pdfjsLib) { document.getElementById('message').textContent = 'Error: pdf.js not loaded.'; return; }
-
       try {
         const pdf = await pdfjsLib.getDocument(url).promise;
         const total = pdf.numPages;
         $('#pageTotal').text('/ ' + total);
 
-        // pre-render first 2 pages before init
+        // helper: render PDF page into <div class="page"><img/></div>
         async function renderPage(num) {
           const page = await pdf.getPage(num);
           const viewport = page.getViewport({ scale: 1.2 });
@@ -81,14 +79,13 @@
           return pageDiv;
         }
 
-        // render first 2 pages
+        // Render first 2 pages *before* initializing turn.js
         const firstDiv = await renderPage(1);
         const secondDiv = (total >= 2) ? await renderPage(2) : null;
-
         flipbookEl.append(firstDiv);
         if (secondDiv) flipbookEl.append(secondDiv);
 
-        // init turn.js with double-page mode
+        // Initialize turn.js AFTER pages exist
         const flipW = Math.min(window.innerWidth * 0.88, firstDiv.firstChild.naturalWidth * 2 * 0.9);
         const flipH = Math.min(window.innerHeight * 0.82, firstDiv.firstChild.naturalHeight * 0.95);
 
@@ -96,48 +93,54 @@
           width: flipW,
           height: flipH,
           autoCenter: true,
-          display: 'double',
+          display: 'double',   // force spreads
           elevation: 50,
           duration: 500,
           pages: total
         });
 
-        // placeholder pages for rest
+        // Insert placeholder pages into turn.js
         for (let i = 3; i <= total; i++) {
-          const pageDiv = document.createElement('div');
-          pageDiv.className = 'page';
-          pageDiv.setAttribute('data-page', i);
-          pageDiv.textContent = 'Loading…';
-          flipbookEl.turn('addPage', pageDiv, i);
+          const placeholder = document.createElement('div');
+          placeholder.className = 'page';
+          placeholder.setAttribute('data-page', i);
+          placeholder.textContent = 'Loading…';
+          flipbookEl.turn('addPage', placeholder, i);
         }
 
-        // lazy load on demand
+        // Lazy-load when turning
         async function ensureRendered(p) {
           if (p < 1 || p > total) return;
           const div = flipbookEl.find(`[data-page='${p}']`)[0];
-          if (!div || div.hasChildNodes()) return;
-          const newDiv = await renderPage(p);
+          if (!div || div.hasChildNodes() && div.firstChild.tagName === 'IMG') return;
+          const rendered = await renderPage(p);
           div.textContent = '';
-          div.appendChild(newDiv.firstChild);
+          div.appendChild(rendered.firstChild);
         }
 
         flipbookEl.bind('turned', (e, page) => {
           $('#pageNum').val(page);
-          [page-2,page-1,page,page+1,page+2].forEach(ensureRendered);
+          [page-2, page-1, page, page+1, page+2].forEach(ensureRendered);
         });
 
-        // preload first neighbors
+        // Preload next two
         ensureRendered(3);
         ensureRendered(4);
 
-        // controls
+        // Controls
         $('#prev').on('click', () => flipbookEl.turn('previous'));
         $('#next').on('click', () => flipbookEl.turn('next'));
         $('#pageNum').attr('max', total);
-        $('#pageNum').on('change', function(){ const p = Math.max(1, Math.min(total, Number(this.value)||1)); flipbookEl.turn('page', p); });
+        $('#pageNum').on('change', function(){
+          const p = Math.max(1, Math.min(total, Number(this.value)||1));
+          flipbookEl.turn('page', p);
+        });
 
         function applyZoom() {
-          flipbookEl.find('img').each(function(){ this.style.transformOrigin='top left'; this.style.transform='scale('+currentZoom+')'; });
+          flipbookEl.find('img').each(function(){
+            this.style.transformOrigin='top left';
+            this.style.transform='scale('+currentZoom+')';
+          });
         }
         $('#zoomIn').on('click', () => { currentZoom = Math.min(2.5, +(currentZoom+0.15).toFixed(2)); applyZoom(); });
         $('#zoomOut').on('click', () => { currentZoom = Math.max(0.6, +(currentZoom-0.15).toFixed(2)); applyZoom(); });
