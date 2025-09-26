@@ -48,22 +48,41 @@
 
   <script>
     (async function(){
-      const url = "Norris_Mangaroo_Arch_Portfolio.pdf"; // must match your filename exactly
+      const url = "Norris_Mangaroo_Arch_Portfolio.pdf"; // must match your filename
       const flipbookEl = $('#flipbook');
       let currentZoom = 1;
 
-      if (!pdfjsLib) {
-        document.getElementById('message').textContent = 'Error: pdf.js failed to load.'; return;
-      }
+      if (!pdfjsLib) { document.getElementById('message').textContent = 'Error: pdf.js not loaded.'; return; }
 
       try {
         const pdf = await pdfjsLib.getDocument(url).promise;
         const total = pdf.numPages;
         $('#pageTotal').text('/ ' + total);
 
-        // preload all pages as images for smooth flipping
+        // prepare empty placeholders
         for (let i = 1; i <= total; i++) {
-          const page = await pdf.getPage(i);
+          const pageDiv = document.createElement('div');
+          pageDiv.className = 'page';
+          pageDiv.setAttribute('data-page', i);
+          pageDiv.textContent = 'Loading…';
+          flipbookEl.append(pageDiv);
+        }
+
+        // init turn.js
+        flipbookEl.turn({
+          width: Math.min(window.innerWidth * 0.88, 1200),
+          height: Math.min(window.innerHeight * 0.82, 800),
+          autoCenter: true,
+          display: 'double',
+          elevation: 50,
+          duration: 500
+        });
+
+        // render a page to <img>
+        async function renderPage(num) {
+          const div = flipbookEl.find(`[data-page='${num}']`)[0];
+          if (!div || div.hasChildNodes()) return; // already rendered
+          const page = await pdf.getPage(num);
           const viewport = page.getViewport({ scale: 1.2 });
           const canvas = document.createElement('canvas');
           const ctx = canvas.getContext('2d');
@@ -76,31 +95,26 @@
           img.style.width = '100%';
           img.style.height = 'auto';
 
-          const pageDiv = document.createElement('div');
-          pageDiv.className = 'page';
-          pageDiv.appendChild(img);
-          flipbookEl.append(pageDiv);
+          div.textContent = '';
+          div.appendChild(img);
         }
 
-        // initialize turn.js after pages are added
-        const first = flipbookEl.find('img')[0];
-        const flipW = Math.min(window.innerWidth * 0.88, first.naturalWidth * 2 * 0.9);
-        const flipH = Math.min(window.innerHeight * 0.82, first.naturalHeight * 0.95);
+        // load first few pages
+        for (let i = 1; i <= Math.min(4,total); i++) renderPage(i);
 
-        flipbookEl.turn({
-          width: flipW,
-          height: flipH,
-          autoCenter: true,
-          display: 'double',
-          elevation: 50,
-          duration: 500
+        // when page is turned, load neighbors
+        flipbookEl.bind('turned', (e, page) => {
+          $('#pageNum').val(page);
+          [page-2,page-1,page,page+1,page+2].forEach(p=>{
+            if (p>=1 && p<=total) renderPage(p);
+          });
         });
 
+        // controls
         $('#prev').on('click', () => flipbookEl.turn('previous'));
         $('#next').on('click', () => flipbookEl.turn('next'));
         $('#pageNum').attr('max', total);
         $('#pageNum').on('change', function(){ const p = Math.max(1, Math.min(total, Number(this.value)||1)); flipbookEl.turn('page', p); });
-        flipbookEl.bind('turned', (e, page) => $('#pageNum').val(page));
 
         function applyZoom() {
           flipbookEl.find('img').each(function(){ this.style.transformOrigin='top left'; this.style.transform='scale('+currentZoom+')'; });
