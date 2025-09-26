@@ -123,7 +123,6 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs
     const totalPages = pdf.numPages;
     $('#pageTotal').text('/ '+totalPages);
 
-    // Maximum page width
     const maxPageWidth = 800;
 
     for(let i=1; i<=totalPages; i++){
@@ -146,13 +145,17 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs
     }
 
     const firstPage = flipbookEl.find('.page')[0];
+
+    // Responsive display: single page on small screens
+    const displayMode = window.innerWidth < 768 ? 'single' : 'double';
+
     flipbookEl.turn({
-      width:firstPage.scrollWidth*2,
+      width:firstPage.scrollWidth * (displayMode==='double'?2:1),
       height:firstPage.scrollHeight,
-      display:'double',
-      autoCenter:true,
-      elevation:50,
-      duration:400
+      display: displayMode,
+      autoCenter: true,
+      elevation: 50,
+      duration: 400
     });
 
     // Navigation
@@ -165,10 +168,8 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs
     });
     flipbookEl.bind('turned', (e,p)=>$('#pageNum').val(p));
 
-    // Zoom
-    function applyZoom(){
-      flipbookEl.css('transform', 'scale('+currentZoom+')');
-    }
+    // Zoom (optional)
+    function applyZoom(){ flipbookEl.css('transform', 'scale('+currentZoom+')'); }
     $('#zoomIn').click(()=>{ currentZoom=Math.min(2.5, (currentZoom+0.1).toFixed(2)); applyZoom(); });
     $('#zoomOut').click(()=>{ currentZoom=Math.max(0.5, (currentZoom-0.1).toFixed(2)); applyZoom(); });
 
@@ -176,9 +177,13 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs
     function fitScreen(){
       const winW = window.innerWidth*0.95;
       const winH = window.innerHeight*0.85;
-      currentZoom = Math.min(winW/(firstPage.scrollWidth*2), winH/firstPage.scrollHeight);
+      const mode = window.innerWidth < 768 ? 'single' : 'double';
+      const pageW = firstPage.scrollWidth * (mode==='double'?2:1);
+      currentZoom = Math.min(winW/pageW, winH/firstPage.scrollHeight);
+      flipbookEl.turn('display', mode);
       applyZoom();
     }
+
     $(window).on('resize', fitScreen);
     fitScreen();
 
