@@ -126,10 +126,10 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs
 
   try{
     const pdf = await pdfjsLib.getDocument(url).promise;
-    const total = pdf.numPages;
+    let total = pdf.numPages;
     $('#pageTotal').text('/ '+total);
 
-    // Render all pages
+    // Render pages
     for(let i=1;i<=total;i++){
       const page = await pdf.getPage(i);
       const viewport = page.getViewport({scale:1.5});
@@ -143,6 +143,14 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs
       div.appendChild(canvas);
       flipbookEl.append(div);
       pageCanvases.push(canvas);
+    }
+
+    // Add blank page at start if total pages is odd
+    if(total % 2 !== 0){
+      const blankDiv = document.createElement('div');
+      blankDiv.className='page';
+      flipbookEl.prepend(blankDiv);
+      total += 1;
     }
 
     // Initialize flipbook with natural width/height
@@ -166,14 +174,14 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs
     });
     flipbookEl.bind('turned',function(e,p){ $('#pageNum').val(p); });
 
-    // Zoom function
+    // Zoom via container scaling
     function applyZoom(){
       flipbookEl.css('transform','scale('+currentZoom+')');
     }
     $('#zoomIn').on('click',()=>{ currentZoom=Math.min(2.5,(currentZoom+0.15).toFixed(2)); applyZoom(); });
     $('#zoomOut').on('click',()=>{ currentZoom=Math.max(0.6,(currentZoom-0.15).toFixed(2)); applyZoom(); });
 
-    // Responsive fit
+    // Responsive: fit width & height
     function fitToScreen(){
       const winW = window.innerWidth*0.95;
       const winH = window.innerHeight*0.85;
@@ -185,7 +193,9 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs
     $(window).on('resize',fitToScreen);
     fitToScreen();
 
-    flipbookEl.turn('page',1);
+    // Start at first real page
+    flipbookEl.turn('page', total % 2 === 0 ? 1 : 2);
+
     $('#message').text('Flipbook loaded — enjoy!');
 
   }catch(err){
