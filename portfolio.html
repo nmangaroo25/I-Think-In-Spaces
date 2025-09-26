@@ -29,31 +29,24 @@
         pageCanvases.push(canvas);
       }
 
-      // Initialize flipbook with first page's natural size
+      // Initialize flipbook with first page's size
       const first = pageCanvases[0];
-      const spreadNaturalW = first.width * 2;
-      const spreadNaturalH = first.height;
-
       flipbookEl.turn({
-        width: spreadNaturalW,
-        height: spreadNaturalH,
+        width: first.width*2,
+        height: first.height,
         display:'double',
         autoCenter:true,
         elevation:50,
         duration:450
       });
 
-      // Fit-to-width resizing
       function resizeFlipbook() {
         if (!pageCanvases[0]) return;
-        const spreadNaturalW = pageCanvases[0].width * 2;
-        const spreadNaturalH = pageCanvases[0].height;
-        const maxW = window.innerWidth * 0.9;
-        const scale = (maxW / spreadNaturalW) * currentZoom;
-        flipbookEl.turn('size', spreadNaturalW * scale, spreadNaturalH * scale);
+        const scale = (window.innerWidth * 0.9) / (pageCanvases[0].width*2) * currentZoom;
+        flipbookEl.turn('size', pageCanvases[0].width*2*scale, pageCanvases[0].height*scale);
       }
 
-      // Navigation controls
+      // Navigation
       $('#prev').on('click',()=>flipbookEl.turn('previous'));
       $('#next').on('click',()=>flipbookEl.turn('next'));
       $('#pageNum').attr('max',total);
@@ -63,13 +56,11 @@
       });
       flipbookEl.bind('turned',(e,p)=>$('#pageNum').val(p));
 
-      // Zoom controls
+      // Zoom
       $('#zoomIn').on('click',()=>{currentZoom=Math.min(2.5,currentZoom+0.15);resizeFlipbook();});
       $('#zoomOut').on('click',()=>{currentZoom=Math.max(0.6,currentZoom-0.15);resizeFlipbook();});
 
       window.addEventListener('resize', resizeFlipbook);
-
-      // Final resize
       resizeFlipbook();
 
       document.getElementById('message').textContent='Flipbook loaded — enjoy!';
