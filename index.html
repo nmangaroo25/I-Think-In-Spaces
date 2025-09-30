@@ -1,188 +1,59 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>I Think In Spaces</title>
-  <link rel="stylesheet" href="style.css" />
 
-  <!-- Minimal CSS for before/after sliders -->
-  <style>
-    .ba-wrap{max-width:1000px;margin:1.25rem auto}
-    .ba-title{margin:.75rem 0 1rem;font-size:1.1rem;font-weight:600;text-align:center}
-    .ba{position:relative;aspect-ratio:16/9;background:#111;border-radius:8px;overflow:hidden}
-    .ba img{display:block;width:100%;height:100%;object-fit:cover;user-select:none;pointer-events:none}
-    .ba .ba-after{position:absolute;inset:0;clip-path:inset(0 0 0 50%)}
-    .ba .ba-handle{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
-    .ba .ba-line{position:absolute;top:0;bottom:0;left:50%;width:2px;background:#fff}
-    .ba .ba-knob{width:38px;height:38px;border-radius:50%;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.35)}
-    .ba input[type="range"]{position:absolute;inset:0;appearance:none;background:transparent;cursor:ew-resize}
-    .ba input[type="range"]::-webkit-slider-thumb{appearance:none;width:0;height:0}
-    .ba input[type="range"]::-moz-range-thumb{width:0;height:0;border:0}
-    html{scroll-behavior:smooth}
-    section{scroll-margin-top:64px}
-  </style>
+  <!-- SEO Meta -->
+  <title>I Think In Spaces LLC | Architectural Design, Drafting & Consulting</title>
+  <meta name="description" content="I Think In Spaces LLC provides architectural design, drafting, and consulting. We create detailed layouts, floor plans, elevations, and visualizations for residential, commercial, and contractor projects." />
+  <meta name="keywords" content="architecture, drafting, design, floor plans, BIM, interior elevations, virtual staging, contractors, realtors, I Think In Spaces LLC" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="I Think In Spaces LLC | Design & Drafting" />
+  <meta property="og:description" content="Architectural design, drafting, and consulting services. Transforming ideas into professional spaces." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://nmangaroo25.github.io/I-Think-In-Spaces/" />
+  <meta property="og:image" content="https://nmangaroo25.github.io/I-Think-In-Spaces/images/portfolio-preview.jpg" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="I Think In Spaces LLC" />
+  <meta name="twitter:description" content="Architectural design, drafting, and consulting services." />
+  <meta name="twitter:image" content="https://nmangaroo25.github.io/I-Think-In-Spaces/images/portfolio-preview.jpg" />
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://nmangaroo25.github.io/I-Think-In-Spaces/" />
+
+  <!-- Favicon -->
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
 </head>
 <body>
-  <!-- Navigation -->
   <header>
-    <nav style="background:#000;padding:12px 0;">
-      <ul style="display:flex;gap:28px;justify-content:center;align-items:center;list-style:none;margin:0;padding:0;">
-        <li><a href="#home" style="color:#fff;text-decoration:none;">Home</a></li>
-        <li><a href="#about" style="color:#fff;text-decoration:none;">About Us</a></li>
-        <li><a href="#staging" style="color:#fff;text-decoration:none;">Virtual Staging</a></li>
-        <li><a href="#contact" style="color:#fff;text-decoration:none;">Contact</a></li>
-        <li><a href="portfolio.html" style="color:#fff;text-decoration:none;">Portfolio</a></li>
-      </ul>
-    </nav>
+    <h1>I Think In Spaces LLC</h1>
+    <p>Design | Drafting | Consulting</p>
   </header>
 
-  <!-- Hero -->
   <main>
-    <section id="home" style="padding:48px 16px; text-align:center; color:#fff; background:#000;">
-      <h1 style="margin:.2em 0">I Think In Spaces</h1>
-      <p style="margin:.5em 0 0">
-        Designing &amp; Drafting Solutions for Realtors, Contractors &amp; Diverse Projects
-      </p>
-    </section>
-
-    <!-- About -->
-    <section id="about" style="padding:48px 16px; max-width:1000px; margin:0 auto;">
+    <section id="about">
       <h2>About Us</h2>
-      <p>
-        I Think In Spaces is comprised of drafters and designers who specialize in creating detailed layouts,
-        plans, and illustrations of buildings, structures, systems, and components based on
-        engineering and architectural specifications.
-      </p>
-      <p>
-        Utilizing the latest computer-aided drawing and Building Information Modeling (BIM)
-        software, we bring accuracy, efficiency, and clarity to every project.
-      </p>
-      <p>
-        We also partner with real estate agents and contractors. Realtors often need architects and designers 
-        for buyers who want to renovate, and contractors frequently prefer to include a designer on their bid team. 
-        By offering collaborative packages, we help clients visualize potential renovations — giving our partners 
-        an edge to win more deals.
-      </p>
-      <p>
-        Whether supporting residential, commercial, or specialty projects, our mission is to
-        deliver drawings that inspire confidence, support collaboration, and set the foundation
-        for successful outcomes.
-      </p>
-      <figure style="margin:24px 0 0">
-        <img src="assets/img/drafting-by-hand.jpg" alt="Drafting by hand" style="width:100%;height:auto;display:block;border-radius:8px;">
-      </figure>
+      <p>I Think In Spaces is comprised of drafters and designers who specialize in creating detailed layouts, plans, and illustrations of buildings, structures, systems, and components based on engineering and architectural specifications.</p>
     </section>
 
-    <!-- Virtual Staging -->
-    <section id="staging" style="padding:48px 16px; max-width:1100px; margin:0 auto;">
+    <section id="virtual-staging">
       <h2>Virtual Staging for Realtors</h2>
-      <p>
-        Our virtual staging services transform empty rooms into welcoming, furnished spaces —
-        helping potential buyers visualize the full potential of a property.
-      </p>
-
-      <!-- Example -->
-      <div class="ba-wrap" aria-label="Example - Before & After">
-        <div class="ba">
-          <img class="ba-before" src="assets/img/staging-before.jpg" alt="Empty apartment before staging">
-          <img class="ba-after"  src="assets/img/staging-after.jpg"  alt="Staged apartment after virtual staging">
-          <div class="ba-handle" aria-hidden="true">
-            <div class="ba-line"></div><div class="ba-knob"></div>
-          </div>
-          <input type="range" min="0" max="100" value="50" aria-label="Reveal staged result">
-        </div>
-        <p class="ba-title">Before ← drag → After</p>
-      </div>
-
-      <h3 class="ba-title" style="margin-top:2rem;">Living Room</h3>
-      <div class="ba-wrap">
-        <div class="ba">
-          <img class="ba-before" src="assets/img/living-room-before.jpg" alt="Living room before">
-          <img class="ba-after"  src="assets/img/living-room-after.jpg"  alt="Living room after">
-          <div class="ba-handle" aria-hidden="true"><div class="ba-line"></div><div class="ba-knob"></div></div>
-          <input type="range" min="0" max="100" value="50" aria-label="Reveal staged living room">
-        </div>
-        <p class="ba-title">Before ← drag → After</p>
-      </div>
-
-      <h3 class="ba-title" style="margin-top:2rem;">Dining Room</h3>
-      <div class="ba-wrap">
-        <div class="ba">
-          <img class="ba-before" src="assets/img/dining-room-before.jpg" alt="Dining room before">
-          <img class="ba-after"  src="assets/img/dining-room-after.jpg"  alt="Dining room after">
-          <div class="ba-handle" aria-hidden="true"><div class="ba-line"></div><div class="ba-knob"></div></div>
-          <input type="range" min="0" max="100" value="50" aria-label="Reveal staged dining room">
-        </div>
-        <p class="ba-title">Before ← drag → After</p>
-      </div>
-
-      <h3 class="ba-title" style="margin-top:2rem;">Kitchen</h3>
-      <div class="ba-wrap">
-        <div class="ba">
-          <img class="ba-before" src="assets/img/kitchen-before.jpg" alt="Kitchen before">
-          <img class="ba-after"  src="assets/img/kitchen-after.jpg"  alt="Kitchen after">
-          <div class="ba-handle" aria-hidden="true"><div class="ba-line"></div><div class="ba-knob"></div></div>
-          <input type="range" min="0" max="100" value="50" aria-label="Reveal staged kitchen">
-        </div>
-        <p class="ba-title">Before ← drag → After</p>
-      </div>
-
-      <h3 class="ba-title" style="margin-top:2rem;">Bedroom</h3>
-      <div class="ba-wrap">
-        <div class="ba">
-          <img class="ba-before" src="assets/img/bedroom-before.jpg" alt="Bedroom before">
-          <img class="ba-after"  src="assets/img/bedroom-after.jpg"  alt="Bedroom after">
-          <div class="ba-handle" aria-hidden="true"><div class="ba-line"></div><div class="ba-knob"></div></div>
-          <input type="range" min="0" max="100" value="50" aria-label="Reveal staged bedroom">
-        </div>
-        <p class="ba-title">Before ← drag → After</p>
-      </div>
-
-      <div style="margin-top:1rem;">
-        <h3>Before</h3>
-        <p>An empty room can feel cold and uninspiring.</p>
-        <h3>After</h3>
-        <p>Staging creates a warm, welcoming environment that sparks imagination.</p>
-      </div>
+      <p>Our virtual staging services transform empty rooms into welcoming, furnished spaces — helping potential buyers visualize the full potential of a property.</p>
     </section>
 
-    <!-- Contact -->
-    <section id="contact" style="padding:48px 16px; max-width:900px; margin:0 auto;">
+    <section id="contact">
       <h2>Contact Us</h2>
-      <p>Have a project in mind? Let’s talk about how I Think In Spaces can bring your ideas to life.</p>
       <p>Email: <a href="mailto:info@ithinkinspaces.com">info@ithinkinspaces.com</a></p>
       <p>Phone: (917) 992-1412</p>
-      <p>© 2025 I Think In Spaces. All rights reserved.</p>
     </section>
   </main>
 
-  <!-- Tiny JS for sliders -->
-  <script>
-    document.querySelectorAll('.ba').forEach(function(ba){
-      const range = ba.querySelector('input[type="range"]');
-      const after = ba.querySelector('.ba-after');
-      const line  = ba.querySelector('.ba-line');
-      function set(v){
-        const pct = Math.max(0, Math.min(100, +v||50));
-        after.style.clipPath = `inset(0 0 0 ${pct}%)`;
-        line.style.left = pct + '%';
-      }
-      range.addEventListener('input', e => set(e.target.value));
-      set(range.value);
-      ba.addEventListener('pointerdown', (e)=>{
-        const r = ba.getBoundingClientRect();
-        function move(ev){
-          const v = ((ev.clientX - r.left) / r.width) * 100;
-          range.value = Math.round(v);
-          set(range.value);
-        }
-        move(e);
-        function up(){ window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up);}
-        window.addEventListener('pointermove', move);
-        window.addEventListener('pointerup', up);
-      });
-    });
-  </script>
+  <footer>
+    <p>© 2025 I Think In Spaces. All rights reserved.</p>
+  </footer>
 </body>
 </html>
