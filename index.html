@@ -4,60 +4,78 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>I Think In Spaces LLC | Architectural Design, Drafting & Consulting</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="bg-white text-gray-800 font-sans">
 
-  <header>
-    <h1>I Think In Spaces</h1>
-    <p>Designing & Drafting Solutions for Realtors, Contractors & Diverse Projects</p>
-    <nav>
-      <ul>
-        <li><a href="#home">Home</a></li>
-        <li><a href="#about">About Us</a></li>
-        <li><a href="#virtual-staging">Virtual Staging</a></li>
-        <li><a href="#contact">Contact</a></li>
-        <li><a href="#portfolio">Portfolio</a></li>
-      </ul>
-    </nav>
+  <!-- Header -->
+  <header class="bg-gray-100 p-4 shadow-md">
+    <div class="container mx-auto flex justify-between items-center">
+      <h1 class="text-2xl font-bold">I Think In Spaces</h1>
+      <nav>
+        <ul class="flex space-x-6">
+          <li><a href="#home" class="hover:text-blue-600">Home</a></li>
+          <li><a href="#about" class="hover:text-blue-600">About Us</a></li>
+          <li><a href="#virtual-staging" class="hover:text-blue-600">Virtual Staging</a></li>
+          <li><a href="#contact" class="hover:text-blue-600">Contact</a></li>
+          <li><a href="#portfolio" class="hover:text-blue-600">Portfolio</a></li>
+        </ul>
+      </nav>
+    </div>
   </header>
 
-  <section id="about">
-    <h2>About Us</h2>
-    <p>I Think In Spaces, LLC is an MBE-certified firm providing dependable <strong>pre-construction drafting and design support</strong> for architectural, engineering, and construction teams. We prepare clear floor plans, coordinated layouts, and organized documentation that follow federal, state, and local requirements.</p>
-
-    <p>Using advanced BIM tools, we help project teams work efficiently and maintain consistent quality. During the construction phase, we also support subcontractors with <strong>BIM shop drawing coordination and clash detection</strong> to keep field teams aligned and minimize conflicts.</p>
-
-    <p>Our services support architects, engineers, contractors, and real estate professionals across government, private, and specialty projects. From facility upgrades to new construction, we focus on accuracy, clarity, and steady collaboration so your team can move forward with confidence.</p>
-
-    <h3>What We Provide</h3>
-    <ul>
-      <li>Precise drafting and BIM support integrated into your workflow</li>
-      <li>Code-aligned documentation ready for review by licensed professionals</li>
-      <li>Reliable production that supports smooth coordination</li>
-      <li>Flexible assistance for diverse project types</li>
-    </ul>
-
-    <h3>Our Approach</h3>
-    <p>Clear communication.<br>
-    Consistent quality.<br>
-    Design support you can rely on.</p>
+  <!-- Hero Section -->
+  <section id="home" class="py-16 text-center bg-gray-50">
+    <div class="container mx-auto">
+      <h2 class="text-3xl md:text-5xl font-bold mb-4">Designing & Drafting Solutions for Realtors, Contractors & Diverse Projects</h2>
+    </div>
   </section>
 
-  <section id="virtual-staging">
-    <h2>Virtual Staging for Realtors</h2>
-    <p>Our virtual staging services transform empty rooms into welcoming, furnished spaces — helping potential buyers visualize the full potential of a property.</p>
-    <!-- Original images and sliders remain intact -->
+  <!-- About Us Section -->
+  <section id="about" class="py-16 bg-white">
+    <div class="container mx-auto max-w-4xl">
+      <h2 class="text-3xl font-bold mb-6">About Us</h2>
+      <p class="mb-4">I Think In Spaces, LLC is an MBE-certified firm providing dependable <strong>pre-construction drafting and design support</strong> for architectural, engineering, and construction teams. We prepare clear floor plans, coordinated layouts, and organized documentation that follow federal, state, and local requirements.</p>
+
+      <p class="mb-4">Using advanced BIM tools, we help project teams work efficiently and maintain consistent quality. During the construction phase, we also support subcontractors with <strong>BIM shop drawing coordination and clash detection</strong> to keep field teams aligned and minimize conflicts.</p>
+
+      <p class="mb-6">Our services support architects, engineers, contractors, and real estate professionals across government, private, and specialty projects. From facility upgrades to new construction, we focus on accuracy, clarity, and steady collaboration so your team can move forward with confidence.</p>
+
+      <h3 class="text-2xl font-semibold mb-4">What We Provide</h3>
+      <ul class="list-disc list-inside mb-6 space-y-1">
+        <li>Precise drafting and BIM support integrated into your workflow</li>
+        <li>Code-aligned documentation ready for review by licensed professionals</li>
+        <li>Reliable production that supports smooth coordination</li>
+        <li>Flexible assistance for diverse project types</li>
+      </ul>
+
+      <h3 class="text-2xl font-semibold mb-4">Our Approach</h3>
+      <p class="space-y-1">Clear communication.<br>Consistent quality.<br>Design support you can rely on.</p>
+    </div>
   </section>
 
-  <section id="contact">
-    <h2>Contact Us</h2>
-    <p>Have a project in mind? Contact us today to schedule your free consultation.</p>
-    <p>Email: info@ithinkinspaces.com</p>
-    <p>Phone: (917) 992-1412</p>
+  <!-- Virtual Staging Section -->
+  <section id="virtual-staging" class="py-16 bg-gray-50">
+    <div class="container mx-auto max-w-4xl">
+      <h2 class="text-3xl font-bold mb-4">Virtual Staging for Realtors</h2>
+      <p>Our virtual staging services transform empty rooms into welcoming, furnished spaces — helping potential buyers visualize the full potential of a property.</p>
+      <!-- Images and sliders remain intact -->
+    </div>
   </section>
 
-  <footer>
+  <!-- Contact Section -->
+  <section id="contact" class="py-16 bg-white">
+    <div class="container mx-auto max-w-4xl">
+      <h2 class="text-3xl font-bold mb-4">Contact Us</h2>
+      <p>Have a project in mind? Contact us today to schedule your free consultation.</p>
+      <p>Email: info@ithinkinspaces.com</p>
+      <p>Phone: (917) 992-1412</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-100 p-4 text-center">
     <p>© 2025 I Think In Spaces. All rights reserved.</p>
   </footer>
 
