@@ -3,88 +3,56 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Norris Mangaroo — Portfolio Flipbook</title>
+
+<!-- SEO Essentials -->
+<title>I Think In Spaces Portfolio | MBE Drafting, BIM & Staging</title>
+<meta name="description" content="Portfolio of I Think In Spaces, LLC, showcasing MBE-certified architectural drafting, BIM coordination, and virtual staging projects for realtors, architects, and contractors.">
+<meta name="keywords" content="architectural drafting portfolio, BIM projects, virtual staging examples, MBE-certified design firm, NYC architecture portfolio">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://nmangaroo25.github.io/I-Think-In-Spaces/portfolio.html">
+
+<!-- Open Graph -->
+<meta property="og:title" content="I Think In Spaces Portfolio">
+<meta property="og:description" content="Explore completed projects: drafting, BIM coordination, and virtual staging by I Think In Spaces.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://nmangaroo25.github.io/I-Think-In-Spaces/portfolio.html">
+<meta property="og:image" content="assets/img/og-image.jpg">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="I Think In Spaces Portfolio">
+<meta name="twitter:description" content="MBE-certified drafting, BIM, and virtual staging projects.">
+<meta name="twitter:image" content="assets/img/og-image.jpg">
+
+<!-- JSON-LD Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "I Think In Spaces, LLC",
+  "url": "https://nmangaroo25.github.io/I-Think-In-Spaces/",
+  "logo": "https://nmangaroo25.github.io/I-Think-In-Spaces/assets/img/logo.png",
+  "email": "info@ithinkinspaces.com",
+  "telephone": "+1-917-992-1412",
+  "description": "MBE-certified drafting, BIM coordination, virtual staging, and architectural support services."
+}
+</script>
+
 <style>
-  :root{
-    --bg:#0f1720;
-    --card:#fff;
-    --muted:#8892a6;
-  }
-  html, body {
-    height:100%;
-    margin:0;
-    font-family:Inter,Helvetica,Arial,sans-serif;
-    background:var(--bg);
-    color:#fff;
-  }
-  a.back {
-    position:fixed;
-    left:18px;
-    top:18px;
-    background:#fff;
-    color:#111;
-    padding:8px 12px;
-    border-radius:8px;
-    text-decoration:none;
-    font-weight:600;
-    z-index:9999;
-  }
-  .topbar {
-    position:fixed;
-    right:18px;
-    top:18px;
-    display:flex;
-    gap:8px;
-    align-items:center;
-    z-index:9999;
-  }
-  .btn {
-    background:#fff;
-    color:#111;
-    border:none;
-    padding:8px 10px;
-    border-radius:8px;
-    font-weight:600;
-    cursor:pointer;
-  }
-  .pager {
-    display:flex;
-    gap:6px;
-    align-items:center;
-    background:rgba(255,255,255,0.04);
-    padding:6px 8px;
-    border-radius:8px;
-  }
-  #flipbook-wrap {
-    height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    overflow:auto;
-  }
-  #flipbook {
-    background:transparent;
-    transform-origin: top center;
-  }
-  .page {
-    background:var(--card);
-    display:inline-block;
-    vertical-align:top;
-  }
-  #message {
-    position:fixed;
-    left:18px;
-    bottom:18px;
-    background:rgba(255,255,255,0.06);
-    padding:8px 12px;
-    border-radius:8px;
-    color:var(--muted);
-    font-size:13px;
-    max-width:45%;
-  }
+  :root{--bg:#0f1720;--card:#fff;--muted:#8892a6;}
+  html, body{height:100%;margin:0;font-family:Inter,Helvetica,Arial,sans-serif;background:var(--bg);color:#fff;}
+  a.back{position:fixed;left:18px;top:18px;background:#fff;color:#111;padding:8px 12px;border-radius:8px;text-decoration:none;font-weight:600;z-index:9999;}
+  .topbar{position:fixed;right:18px;top:18px;display:flex;gap:8px;align-items:center;z-index:9999;}
+  .btn{background:#fff;color:#111;border:none;padding:8px 10px;border-radius:8px;font-weight:600;cursor:pointer;}
+  .pager{display:flex;gap:6px;align-items:center;background:rgba(255,255,255,0.04);padding:6px 8px;border-radius:8px;}
+  #flipbook-wrap{height:100vh;display:flex;align-items:center;justify-content:center;overflow:auto;}
+  #flipbook{background:transparent;transform-origin: top center;}
+  .page{background:var(--card);display:inline-block;vertical-align:top;}
+  #message{position:fixed;left:18px;bottom:18px;background:rgba(255,255,255,0.06);padding:8px 12px;border-radius:8px;color:var(--muted);font-size:13px;max-width:45%;}
 </style>
 </head>
 <body>
+
 <a class="back" href="https://nmangaroo25.github.io/I-Think-In-Spaces/#home">← Back to Home</a>
 
 <div class="topbar" role="toolbar" aria-label="Flipbook controls">
@@ -145,8 +113,6 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs
     }
 
     const firstPage = flipbookEl.find('.page')[0];
-
-    // Responsive display: single page on small screens
     const displayMode = window.innerWidth < 768 ? 'single' : 'double';
 
     flipbookEl.turn({
@@ -158,7 +124,6 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs
       duration: 400
     });
 
-    // Navigation
     $('#prev').click(()=>flipbookEl.turn('previous'));
     $('#next').click(()=>flipbookEl.turn('next'));
     $('#pageNum').attr('max', flipbookEl.turn('pages'));
@@ -168,12 +133,10 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs
     });
     flipbookEl.bind('turned', (e,p)=>$('#pageNum').val(p));
 
-    // Zoom (optional)
     function applyZoom(){ flipbookEl.css('transform', 'scale('+currentZoom+')'); }
     $('#zoomIn').click(()=>{ currentZoom=Math.min(2.5, (currentZoom+0.1).toFixed(2)); applyZoom(); });
     $('#zoomOut').click(()=>{ currentZoom=Math.max(0.5, (currentZoom-0.1).toFixed(2)); applyZoom(); });
 
-    // Fit screen
     function fitScreen(){
       const winW = window.innerWidth*0.95;
       const winH = window.innerHeight*0.85;
