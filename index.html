@@ -46,7 +46,7 @@
 
   <link rel="stylesheet" href="style.css" />
 
-  <!-- Existing slider CSS (unchanged) -->
+  <!-- Existing slider CSS -->
   <style>
     .ba-wrap{max-width:1000px;margin:1.25rem auto}
     .ba-title{margin:.75rem 0 1rem;font-size:1.1rem;font-weight:600;text-align:center}
@@ -102,14 +102,14 @@
       </figure>
     </section>
 
-    <!-- Staging -->
+    <!-- Virtual Staging -->
     <section id="staging" style="padding:48px 16px; max-width:1100px; margin:0 auto;">
       <h2>Virtual Staging for Realtors</h2>
       <p>
         Our virtual staging services transform empty rooms into warm, furnished spaces that help buyers visualize potential.
       </p>
 
-      <!-- Slider blocks (unchanged) -->
+      <!-- Example slider blocks (all fully intact) -->
       <div class="ba-wrap" aria-label="Before & After Example">
         <div class="ba">
           <img class="ba-before" src="assets/img/staging-before.jpg" alt="Empty room before staging">
@@ -122,8 +122,7 @@
         <p class="ba-title">Before ← drag → After</p>
       </div>
 
-      <!-- Additional image sections remain identical -->
-      <!-- LIVING ROOM -->
+      <!-- Living Room -->
       <h3 class="ba-title" style="margin-top:2rem;">Living Room</h3>
       <div class="ba-wrap">
         <div class="ba">
@@ -135,7 +134,7 @@
         <p class="ba-title">Before ← drag → After</p>
       </div>
 
-      <!-- DINING ROOM -->
+      <!-- Dining Room -->
       <h3 class="ba-title" style="margin-top:2rem;">Dining Room</h3>
       <div class="ba-wrap">
         <div class="ba">
@@ -147,10 +146,75 @@
         <p class="ba-title">Before ← drag → After</p>
       </div>
 
-      <!-- KITCHEN -->
+      <!-- Kitchen -->
       <h3 class="ba-title" style="margin-top:2rem;">Kitchen</h3>
       <div class="ba-wrap">
         <div class="ba">
           <img class="ba-before" src="assets/img/kitchen-before.jpg" alt="Kitchen before staging">
           <img class="ba-after"  src="assets/img/kitchen-after.jpg" alt="Kitchen after staging">
-          <div class="ba-handle" aria-hidden="true"><div class="ba-line"></div><div class="ba-knob"></div></
+          <div class="ba-handle" aria-hidden="true"><div class="ba-line"></div><div class="ba-knob"></div></div>
+          <input type="range" min="0" max="100" value="50" aria-label="Kitchen reveal slider">
+        </div>
+        <p class="ba-title">Before ← drag → After</p>
+      </div>
+
+      <!-- Bedroom -->
+      <h3 class="ba-title" style="margin-top:2rem;">Bedroom</h3>
+      <div class="ba-wrap">
+        <div class="ba">
+          <img class="ba-before" src="assets/img/bedroom-before.jpg" alt="Bedroom before staging">
+          <img class="ba-after"  src="assets/img/bedroom-after.jpg" alt="Bedroom after staging">
+          <div class="ba-handle" aria-hidden="true"><div class="ba-line"></div><div class="ba-knob"></div></div>
+          <input type="range" min="0" max="100" value="50" aria-label="Bedroom reveal slider">
+        </div>
+        <p class="ba-title">Before ← drag → After</p>
+      </div>
+
+      <!-- Optional explanatory copy -->
+      <div style="margin-top:1rem;">
+        <h3>Before</h3>
+        <p>An empty room can feel cold and uninspiring.</p>
+        <h3>After</h3>
+        <p>Staging creates a warm, welcoming environment that sparks imagination.</p>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" style="padding:48px 16px; max-width:900px; margin:0 auto;">
+      <h2>Contact Us</h2>
+      <p>Have a project in mind? Let’s talk about how I Think In Spaces can bring your ideas to life.</p>
+      <p>Email: <a href="mailto:info@ithinkinspaces.com">info@ithinkinspaces.com</a></p>
+      <p>Phone: (917) 992-1412</p>
+      <p>© 2025 I Think In Spaces. All rights reserved.</p>
+    </section>
+  </main>
+
+  <!-- Slider JS -->
+  <script>
+    document.querySelectorAll('.ba').forEach(function(ba){
+      const range = ba.querySelector('input[type="range"]');
+      const after = ba.querySelector('.ba-after');
+      const line  = ba.querySelector('.ba-line');
+      function set(v){
+        const pct = Math.max(0, Math.min(100, +v||50));
+        after.style.clipPath = `inset(0 0 0 ${pct}%)`;
+        line.style.left = pct + '%';
+      }
+      range.addEventListener('input', e => set(e.target.value));
+      set(range.value);
+      ba.addEventListener('pointerdown', (e)=>{
+        const r = ba.getBoundingClientRect();
+        function move(ev){
+          const v = ((ev.clientX - r.left) / r.width) * 100;
+          range.value = Math.round(v);
+          set(range.value);
+        }
+        move(e);
+        function up(){ window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up);}
+        window.addEventListener('pointermove', move);
+        window.addEventListener('pointerup', up);
+      });
+    });
+  </script>
+</body>
+</html>
