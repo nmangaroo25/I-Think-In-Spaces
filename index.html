@@ -12,20 +12,17 @@
 
   <link rel="canonical" href="https://nmangaroo25.github.io/I-Think-In-Spaces/">
 
-  <!-- Open Graph -->
   <meta property="og:title" content="I Think In Spaces | Drafting, BIM & Virtual Staging">
   <meta property="og:description" content="MBE-certified drafting & BIM support for architects, engineers, contractors and realtors.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://nmangaroo25.github.io/I-Think-In-Spaces/">
   <meta property="og:image" content="assets/img/og-image.jpg">
 
-  <!-- Twitter / X -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="I Think In Spaces | Drafting, BIM & Staging" />
   <meta name="twitter:description" content="MBE-certified architectural drafting and virtual staging studio." />
   <meta name="twitter:image" content="assets/img/og-image.jpg" />
 
-  <!-- Schema -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -41,88 +38,43 @@
       "addressLocality": "New York",
       "addressRegion": "NY",
       "addressCountry": "USA"
-    },
-    "sameAs": [
-      "https://x.com/ithinkinspaces",
-      "https://www.linkedin.com/in/norris-mangaroo-425945397/",
-      "https://www.instagram.com/ithinkinspaces/"
-    ]
+    }
   }
   </script>
 
-  <style>
-    body {
-      margin:0;
-      font-family: Arial, sans-serif;
-      line-height:1.6;
-      color:#222;
-    }
+  <link rel="stylesheet" href="style.css" />
 
+  <style>
+    body { margin:0; font-family:Arial, sans-serif; line-height:1.6; color:#222; }
     a { color:#0077cc; text-decoration:none; }
     a:hover { text-decoration:underline; }
 
-    header nav {
-      background:#000;
-      padding:12px 24px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-    }
+    section h2 { font-size:2rem; font-weight:600; margin:0 0 24px; text-align:left; }
+    section h3 { font-size:1.3rem; font-weight:600; margin:32px 0 16px; text-align:left; }
 
-    header nav ul {
-      display:flex;
-      gap:28px;
-      list-style:none;
-      margin:0;
-      padding:0;
-    }
+    header nav { background:#000; padding:12px 0; }
+    header nav ul { display:flex; gap:28px; justify-content:center; align-items:center; list-style:none; margin:0; padding:0; }
+    header nav a { color:#fff; font-weight:600; }
 
-    header nav a {
-      color:#fff;
-      font-weight:600;
-    }
+    #home { padding:48px 16px; text-align:center; color:#fff; background:#000; }
+    #home h1 { font-size:2.5rem; margin:0 0 16px; }
+    #home p { font-size:1.2rem; margin:0; }
 
-    .social-links a {
-      margin-left:16px;
-      font-size:0.9rem;
-      opacity:0.9;
-    }
-
-    .social-links a:hover {
-      opacity:1;
-      text-decoration:underline;
-    }
-
-    section {
-      padding:48px 16px;
-      max-width:1100px;
-      margin:0 auto;
-    }
-
-    #home {
-      background:#000;
-      color:#fff;
-      text-align:center;
-      padding:64px 16px;
-    }
-
-    #home h1 { font-size:2.5rem; margin-bottom:12px; }
+    section { padding:48px 16px; max-width:1100px; margin:0 auto; scroll-margin-top:64px; }
 
     .ba-wrap{max-width:1000px;margin:1.25rem auto}
+    .ba-title{margin:.75rem 0 1rem;font-size:1.1rem;font-weight:600;text-align:center}
     .ba{position:relative;aspect-ratio:16/9;background:#111;border-radius:8px;overflow:hidden}
-    .ba img{width:100%;height:100%;object-fit:cover}
+    .ba img{display:block;width:100%;height:100%;object-fit:cover;user-select:none;pointer-events:none}
     .ba .ba-after{position:absolute;inset:0;clip-path:inset(0 0 0 50%)}
+    .ba .ba-handle{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
     .ba .ba-line{position:absolute;top:0;bottom:0;left:50%;width:2px;background:#fff}
-    .ba input{position:absolute;inset:0;appearance:none;background:transparent}
+    .ba .ba-knob{width:38px;height:38px;border-radius:50%;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.35)}
+    .ba input[type="range"]{position:absolute;inset:0;appearance:none;background:transparent;cursor:ew-resize}
+    .ba input[type="range"]::-webkit-slider-thumb{appearance:none;width:0;height:0}
+    .ba input[type="range"]::-moz-range-thumb{width:0;height:0;border:0}
 
-    footer {
-      background:#000;
-      color:#fff;
-      text-align:center;
-      padding:32px 16px;
-    }
-
-    footer a { color:#fff; margin:0 10px; font-weight:600; }
+    html{scroll-behavior:smooth}
   </style>
 </head>
 
@@ -137,12 +89,6 @@
       <li><a href="#contact">Contact</a></li>
       <li><a href="portfolio.html">Portfolio</a></li>
     </ul>
-
-    <div class="social-links">
-      <a href="https://x.com/ithinkinspaces" target="_blank" rel="noopener">X</a>
-      <a href="https://www.linkedin.com/in/norris-mangaroo-425945397/" target="_blank" rel="noopener">LinkedIn</a>
-      <a href="https://www.instagram.com/ithinkinspaces/" target="_blank" rel="noopener">Instagram</a>
-    </div>
   </nav>
 </header>
 
@@ -150,30 +96,56 @@
 
 <section id="home">
   <h1>I Think In Spaces</h1>
-  <p>Drafting Services & Virtual Staging Solutions</p>
+  <p>Drafting Services &amp; Virtual Staging Solutions</p>
 </section>
 
 <section id="about">
   <h2>About Us</h2>
-  <p>I Think In Spaces, LLC is an MBE-certified firm providing dependable pre-construction drafting and design support for architectural, engineering, and construction teams.</p>
+  <p>I Think In Spaces, LLC is an MBE-certified firm providing dependable <strong>pre-construction drafting and design support</strong> for architectural, engineering, and construction teams.</p>
+  <p>We prepare clear floor plans, coordinated layouts, and organized documentation that follow federal, state, and local requirements.</p>
+  <p>Using advanced BIM tools, we support subcontractors with <strong>BIM shop drawings & clash detection</strong> to keep field teams aligned.</p>
+  <figure style="margin:24px 0 0">
+    <img src="assets/img/drafting-by-hand.jpg" alt="Architect drafting by hand at a desk" style="width:100%;height:auto;display:block;border-radius:8px;">
+  </figure>
+</section>
+
+<section id="staging">
+  <h2>Virtual Staging for Realtors</h2>
+  <p>Our virtual staging services transform empty rooms into warm, furnished spaces that help buyers visualize potential.</p>
 </section>
 
 <section id="contact">
   <h2>Contact Us</h2>
+  <p>Have a project in mind? <strong>Schedule a free consultation</strong> and let’s talk about how I Think In Spaces can bring your ideas to life.</p>
   <p>Email: <a href="mailto:info@ithinkinspaces.com">info@ithinkinspaces.com</a></p>
   <p>Phone: (917) 992-1412</p>
+
+  <p>
+    Follow us:
+    <a href="https://x.com/ithinkinspaces" target="_blank" rel="noopener">X (Twitter)</a> |
+    <a href="https://www.linkedin.com/in/norris-mangaroo-425945397/" target="_blank" rel="noopener">LinkedIn</a> |
+    <a href="https://www.instagram.com/ithinkinspaces/" target="_blank" rel="noopener">Instagram</a>
+  </p>
+
+  <p>© 2025 I Think In Spaces. All rights reserved.</p>
 </section>
 
 </main>
 
-<footer>
-  <p>© 2025 I Think In Spaces, LLC</p>
-  <p>
-    <a href="https://x.com/ithinkinspaces" target="_blank">X</a> |
-    <a href="https://www.linkedin.com/in/norris-mangaroo-425945397/" target="_blank">LinkedIn</a> |
-    <a href="https://www.instagram.com/ithinkinspaces/" target="_blank">Instagram</a>
-  </p>
-</footer>
+<script>
+document.querySelectorAll('.ba').forEach(function(ba){
+  const range = ba.querySelector('input[type="range"]');
+  const after = ba.querySelector('.ba-after');
+  const line  = ba.querySelector('.ba-line');
+  function set(v){
+    const pct = Math.max(0, Math.min(100, +v||50));
+    after.style.clipPath = `inset(0 0 0 ${pct}%)`;
+    line.style.left = pct + '%';
+  }
+  range.addEventListener('input', e => set(e.target.value));
+  set(range.value);
+});
+</script>
 
 </body>
 </html>
