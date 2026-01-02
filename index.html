@@ -22,6 +22,25 @@
   <meta name="twitter:description" content="MBE-certified architectural drafting and virtual staging studio." />
   <meta name="twitter:image" content="assets/img/og-image.jpg" />
 
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "I Think In Spaces, LLC",
+    "url": "https://nmangaroo25.github.io/I-Think-In-Spaces/",
+    "logo": "https://nmangaroo25.github.io/I-Think-In-Spaces/assets/img/logo.png",
+    "email": "info@ithinkinspaces.com",
+    "telephone": "+1-917-992-1412",
+    "description": "MBE-certified drafting, BIM coordination, virtual staging, and architectural support services.",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "New York",
+      "addressRegion": "NY",
+      "addressCountry": "USA"
+    }
+  }
+  </script>
+
   <link rel="stylesheet" href="style.css" />
 
   <style>
@@ -29,88 +48,164 @@
     a { color:#0077cc; text-decoration:none; }
     a:hover { text-decoration:underline; }
 
-    section h2 { font-size:2rem; font-weight:600; margin:0 0 24px; }
+    section h2 { font-size:2rem; font-weight:600; margin:0 0 24px; text-align:left; }
+    section h3 { font-size:1.3rem; font-weight:600; margin:32px 0 16px; text-align:left; }
 
     header nav { background:#000; padding:12px 0; }
-    header nav ul { display:flex; gap:28px; justify-content:center; list-style:none; margin:0; padding:0; }
+    header nav ul { display:flex; gap:28px; justify-content:center; align-items:center; list-style:none; margin:0; padding:0; }
     header nav a { color:#fff; font-weight:600; }
 
     #home { padding:48px 16px; text-align:center; color:#fff; background:#000; }
+    #home h1 { font-size:2.5rem; margin:0 0 16px; }
+    #home p { font-size:1.2rem; margin:0; }
 
     section { padding:48px 16px; max-width:1100px; margin:0 auto; scroll-margin-top:64px; }
 
-    html { scroll-behavior:smooth }
+    /* Before/After slider CSS */
+    .ba-wrap{max-width:1000px;margin:1.25rem auto}
+    .ba-title{margin:.75rem 0 1rem;font-size:1.1rem;font-weight:600;text-align:center}
+    .ba{position:relative;aspect-ratio:16/9;background:#111;border-radius:8px;overflow:hidden}
+    .ba img{display:block;width:100%;height:100%;object-fit:cover;user-select:none;pointer-events:none}
+    .ba .ba-after{position:absolute;inset:0;clip-path:inset(0 0 0 50%)}
+    .ba .ba-handle{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+    .ba .ba-line{position:absolute;top:0;bottom:0;left:50%;width:2px;background:#fff}
+    .ba .ba-knob{width:38px;height:38px;border-radius:50%;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.35)}
+    .ba input[type="range"]{position:absolute;inset:0;appearance:none;background:transparent;cursor:ew-resize}
+    .ba input[type="range"]::-webkit-slider-thumb{appearance:none;width:0;height:0}
+    .ba input[type="range"]::-moz-range-thumb{width:0;height:0;border:0}
+
+    html{scroll-behavior:smooth}
   </style>
 </head>
-
 <body>
-<header>
-  <nav>
-    <ul>
-      <li><a href="#home">Home</a></li>
-      <li><a href="#about">About Us</a></li>
-      <li><a href="#staging">Virtual Staging</a></li>
-      <li><a href="#contact">Contact</a></li>
-      <li><a href="portfolio.html">Portfolio</a></li>
-    </ul>
-  </nav>
-</header>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About Us</a></li>
+        <li><a href="#staging">Virtual Staging</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="portfolio.html">Portfolio</a></li>
+      </ul>
+    </nav>
+  </header>
 
-<main>
-  <section id="home">
-    <h1>I Think In Spaces</h1>
-    <p>Drafting Services &amp; Virtual Staging Solutions</p>
-  </section>
+  <main>
+    <!-- Hero -->
+    <section id="home">
+      <h1>I Think In Spaces</h1>
+      <p>Drafting Services &amp; Virtual Staging Solutions</p>
+    </section>
 
-  <!-- ✅ UPDATED ABOUT US -->
-  <section id="about">
-    <h2>About Us</h2>
-    <p>I Think In Spaces, LLC is a New York City and New York State–certified MBE architectural design and drafting firm providing dependable pre-construction and documentation support for architectural, engineering, and construction teams.</p>
-    <p>The firm supports project teams through the preparation of clear floor plans, coordinated layouts, and well-organized drawing sets that align with federal, state, and local requirements.</p>
-    <p>Led by a principal with professional experience supporting multi-disciplinary design teams, I Think In Spaces utilizes advanced CAD and BIM workflows to assist prime consultants and subcontractors with drafting coordination, model support, and constructability documentation to help keep projects organized and aligned.</p>
+    <!-- About -->
+    <section id="about">
+      <h2>About Us</h2>
+      <p>I Think In Spaces, LLC is a New York City and New York State–certified MBE architectural design and drafting firm providing dependable pre-construction and documentation support for architectural, engineering, and construction teams.</p>
+      <p>The firm supports project teams through the preparation of clear floor plans, coordinated layouts, and well-organized drawing sets that align with federal, state, and local requirements.</p>
+      <p>Led by a principal with professional experience supporting multi-disciplinary design teams, I Think In Spaces utilizes advanced CAD and BIM workflows to assist prime consultants and subcontractors with drafting coordination, model support, and constructability documentation to help keep projects organized and aligned.</p>
+      <figure style="margin:24px 0 0">
+        <img src="assets/img/drafting-by-hand.jpg" alt="Architect drafting by hand at a desk" style="width:100%;height:auto;display:block;border-radius:8px;">
+      </figure>
+    </section>
 
-    <figure style="margin-top:24px">
-      <img src="assets/img/drafting-by-hand.jpg" alt="Architect drafting by hand at a desk" style="width:100%;border-radius:8px;">
-    </figure>
-  </section>
+    <!-- Virtual Staging -->
+    <section id="staging">
+      <h2>Virtual Staging for Realtors</h2>
+      <p>Our virtual staging services transform empty rooms into warm, furnished spaces that help buyers visualize potential.</p>
 
-  <!-- ✅ STAGING SECTION (UNCHANGED / PLACEHOLDER) -->
-  <section id="staging">
-    <h2>Virtual Staging for Realtors</h2>
-    <p>Our virtual staging services transform empty rooms into warm, furnished spaces that help buyers visualize potential.</p>
-    <!-- Add before/after sliders here -->
-  </section>
+      <!-- Main Slider -->
+      <div class="ba-wrap">
+        <div class="ba">
+          <img class="ba-before" src="assets/img/staging-before.jpg" alt="Empty room before staging">
+          <img class="ba-after" src="assets/img/staging-after.jpg" alt="Virtual staged room after design">
+          <div class="ba-handle" aria-hidden="true"><div class="ba-line"></div><div class="ba-knob"></div></div>
+          <input type="range" min="0" max="100" value="50">
+        </div>
+        <p class="ba-title">Before ← drag → After</p>
+      </div>
 
-  <section id="contact">
-    <h2>Contact Us</h2>
-    <p><strong>Schedule a free consultation</strong> and let’s talk about how I Think In Spaces can bring your ideas to life.</p>
-    <p>Email: <a href="mailto:info@ithinkinspaces.com">info@ithinkinspaces.com</a></p>
-    <p>Phone: (917) 992-1412</p>
-    <p>
-      Follow us:
-      <a href="#">X</a> |
-      <a href="https://www.linkedin.com" target="_blank">LinkedIn</a> |
-      <a href="https://www.instagram.com" target="_blank">Instagram</a>
-    </p>
-    <p>© 2025 I Think In Spaces. All rights reserved.</p>
-  </section>
-</main>
+      <!-- Rooms -->
+      <h3>Living Room</h3>
+      <div class="ba-wrap">
+        <div class="ba">
+          <img class="ba-before" src="assets/img/living-room-before.jpg" alt="Living room before virtual staging">
+          <img class="ba-after" src="assets/img/living-room-after.jpg" alt="Living room after virtual staging">
+          <div class="ba-handle" aria-hidden="true"><div class="ba-line"></div><div class="ba-knob"></div></div>
+          <input type="range" min="0" max="100" value="50">
+        </div>
+        <p class="ba-title">Before ← drag → After</p>
+      </div>
 
-<script>
-  document.querySelectorAll('.ba').forEach(function(ba){
-    const range = ba.querySelector('input');
-    const after = ba.querySelector('.ba-after');
-    const line  = ba.querySelector('.ba-line');
+      <h3>Dining Room</h3>
+      <div class="ba-wrap">
+        <div class="ba">
+          <img class="ba-before" src="assets/img/dining-room-before.jpg" alt="Dining room before staging">
+          <img class="ba-after" src="assets/img/dining-room-after.jpg" alt="Dining room after staging">
+          <div class="ba-handle" aria-hidden="true"><div class="ba-line"></div><div class="ba-knob"></div></div>
+          <input type="range" min="0" max="100" value="50">
+        </div>
+        <p class="ba-title">Before ← drag → After</p>
+      </div>
 
-    function set(v){
-      const pct = Math.max(0, Math.min(100, +v || 50));
-      after.style.clipPath = `inset(0 0 0 ${pct}%)`;
-      line.style.left = pct + '%';
-    }
+      <h3>Kitchen</h3>
+      <div class="ba-wrap">
+        <div class="ba">
+          <img class="ba-before" src="assets/img/kitchen-before.jpg" alt="Kitchen before staging">
+          <img class="ba-after" src="assets/img/kitchen-after.jpg" alt="Kitchen after staging">
+          <div class="ba-handle" aria-hidden="true"><div class="ba-line"></div><div class="ba-knob"></div></div>
+          <input type="range" min="0" max="100" value="50">
+        </div>
+        <p class="ba-title">Before ← drag → After</p>
+      </div>
 
-    range.addEventListener('input', e => set(e.target.value));
-    set(range.value);
-  });
-</script>
+      <h3>Bedroom</h3>
+      <div class="ba-wrap">
+        <div class="ba">
+          <img class="ba-before" src="assets/img/bedroom-before.jpg" alt="Bedroom before staging">
+          <img class="ba-after" src="assets/img/bedroom-after.jpg" alt="Bedroom after staging">
+          <div class="ba-handle" aria-hidden="true"><div class="ba-line"></div><div class="ba-knob"></div></div>
+          <input type="range" min="0" max="100" value="50">
+        </div>
+        <p class="ba-title">Before ← drag → After</p>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact">
+      <h2>Contact Us</h2>
+      <p>Have a project in mind? <strong>Schedule a free consultation</strong> and let’s talk about how I Think In Spaces can bring your ideas to life.</p>
+      <p>Email: <a href="mailto:info@ithinkinspaces.com">info@ithinkinspaces.com</a></p>
+      <p>Phone: (917) 992-1412</p>
+      <p>© 2025 I Think In Spaces. All rights reserved.</p>
+    </section>
+  </main>
+
+  <!-- Slider JS -->
+  <script>
+    document.querySelectorAll('.ba').forEach(function(ba){
+      const range = ba.querySelector('input[type="range"]');
+      const after = ba.querySelector('.ba-after');
+      const line  = ba.querySelector('.ba-line');
+      function set(v){
+        const pct = Math.max(0, Math.min(100, +v||50));
+        after.style.clipPath = `inset(0 0 0 ${pct}%)`;
+        line.style.left = pct + '%';
+      }
+      range.addEventListener('input', e => set(e.target.value));
+      set(range.value);
+      ba.addEventListener('pointerdown', (e)=>{
+        const r = ba.getBoundingClientRect();
+        function move(ev){
+          const v = ((ev.clientX - r.left) / r.width) * 100;
+          range.value = Math.round(v);
+          set(range.value);
+        }
+        move(e);
+        function up(){ window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up);}
+        window.addEventListener('pointermove', move);
+        window.addEventListener('pointerup', up);
+      });
+    });
+  </script>
 </body>
 </html>
