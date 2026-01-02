@@ -22,25 +22,6 @@
   <meta name="twitter:description" content="MBE-certified architectural drafting and virtual staging studio." />
   <meta name="twitter:image" content="assets/img/og-image.jpg" />
 
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "I Think In Spaces, LLC",
-    "url": "https://nmangaroo25.github.io/I-Think-In-Spaces/",
-    "logo": "https://nmangaroo25.github.io/I-Think-In-Spaces/assets/img/logo.png",
-    "email": "info@ithinkinspaces.com",
-    "telephone": "+1-917-992-1412",
-    "description": "MBE-certified drafting, BIM coordination, virtual staging, and architectural support services.",
-    "address": {
-      "@type": "PostalAddress",
-      "addressLocality": "New York",
-      "addressRegion": "NY",
-      "addressCountry": "USA"
-    }
-  }
-  </script>
-
   <link rel="stylesheet" href="style.css" />
 
   <style>
@@ -49,27 +30,16 @@
     a:hover { text-decoration:underline; }
 
     section h2 { font-size:2rem; font-weight:600; margin:0 0 24px; }
-    section h3 { font-size:1.3rem; font-weight:600; margin:32px 0 16px; }
 
     header nav { background:#000; padding:12px 0; }
     header nav ul { display:flex; gap:28px; justify-content:center; list-style:none; margin:0; padding:0; }
     header nav a { color:#fff; font-weight:600; }
 
     #home { padding:48px 16px; text-align:center; color:#fff; background:#000; }
-    #home h1 { font-size:2.5rem; margin:0 0 16px; }
 
     section { padding:48px 16px; max-width:1100px; margin:0 auto; scroll-margin-top:64px; }
 
-    .ba-wrap{max-width:1000px;margin:1.25rem auto}
-    .ba-title{margin:.75rem 0 1rem;font-size:1.1rem;font-weight:600;text-align:center}
-    .ba{position:relative;aspect-ratio:16/9;background:#111;border-radius:8px;overflow:hidden}
-    .ba img{width:100%;height:100%;object-fit:cover;pointer-events:none}
-    .ba .ba-after{position:absolute;inset:0;clip-path:inset(0 0 0 50%)}
-    .ba .ba-handle{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
-    .ba .ba-line{position:absolute;top:0;bottom:0;left:50%;width:2px;background:#fff}
-    .ba .ba-knob{width:38px;height:38px;border-radius:50%;background:#fff}
-
-    html{scroll-behavior:smooth}
+    html { scroll-behavior:smooth }
   </style>
 </head>
 
@@ -92,26 +62,28 @@
     <p>Drafting Services &amp; Virtual Staging Solutions</p>
   </section>
 
-  <!-- ✅ UPDATED ABOUT US (TEXT ONLY) -->
+  <!-- ✅ UPDATED ABOUT US -->
   <section id="about">
     <h2>About Us</h2>
     <p>I Think In Spaces, LLC is a New York City and New York State–certified MBE architectural design and drafting firm providing dependable pre-construction and documentation support for architectural, engineering, and construction teams.</p>
     <p>The firm supports project teams through the preparation of clear floor plans, coordinated layouts, and well-organized drawing sets that align with federal, state, and local requirements.</p>
     <p>Led by a principal with professional experience supporting multi-disciplinary design teams, I Think In Spaces utilizes advanced CAD and BIM workflows to assist prime consultants and subcontractors with drafting coordination, model support, and constructability documentation to help keep projects organized and aligned.</p>
-    <figure style="margin:24px 0 0">
+
+    <figure style="margin-top:24px">
       <img src="assets/img/drafting-by-hand.jpg" alt="Architect drafting by hand at a desk" style="width:100%;border-radius:8px;">
     </figure>
   </section>
 
+  <!-- ✅ STAGING SECTION (UNCHANGED / PLACEHOLDER) -->
   <section id="staging">
     <h2>Virtual Staging for Realtors</h2>
     <p>Our virtual staging services transform empty rooms into warm, furnished spaces that help buyers visualize potential.</p>
-    <!-- sliders unchanged -->
+    <!-- Add before/after sliders here -->
   </section>
 
   <section id="contact">
     <h2>Contact Us</h2>
-    <p>Have a project in mind? <strong>Schedule a free consultation</strong> and let’s talk about how I Think In Spaces can bring your ideas to life.</p>
+    <p><strong>Schedule a free consultation</strong> and let’s talk about how I Think In Spaces can bring your ideas to life.</p>
     <p>Email: <a href="mailto:info@ithinkinspaces.com">info@ithinkinspaces.com</a></p>
     <p>Phone: (917) 992-1412</p>
     <p>
@@ -129,11 +101,13 @@
     const range = ba.querySelector('input');
     const after = ba.querySelector('.ba-after');
     const line  = ba.querySelector('.ba-line');
+
     function set(v){
-      const pct = Math.max(0, Math.min(100, +v||50));
+      const pct = Math.max(0, Math.min(100, +v || 50));
       after.style.clipPath = `inset(0 0 0 ${pct}%)`;
       line.style.left = pct + '%';
     }
+
     range.addEventListener('input', e => set(e.target.value));
     set(range.value);
   });
