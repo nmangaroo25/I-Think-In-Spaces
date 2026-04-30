@@ -6,7 +6,6 @@
 
 <title>I Think In Spaces Portfolio | MBE Architectural Consultancy</title>
 <meta name="description" content="Technical architectural portfolio showcasing BIM coordination and pre-construction services.">
-<meta name="robots" content="index, follow">
 
 <style>
   :root{--bg:#1a1c1e;--card:#ffffff;--muted:#a1aab4;--accent:#0077cc;}
@@ -25,11 +24,12 @@
   #pageNum{width:45px; background:transparent; border:none; color:#fff; font-weight:700; text-align:center; font-size:16px;}
   #pageTotal{color:var(--muted); font-size:14px; margin-left:4px;}
 
-  #flipbook-wrap{height:100vh; width:100vw; display:flex; align-items:center; justify-content:center; padding-top:60px; box-sizing:border-box; overflow:hidden;}
+  /* Removed extra padding to allow the book to touch the nav/bottom */
+  #flipbook-wrap{height:100vh; width:100vw; display:flex; align-items:center; justify-content:center; padding-top:60px; box-sizing:border-box; overflow:visible;}
   
   #flipbook{transform-origin: center center; display: block !important;}
   
-  .page{background:var(--card); box-shadow:0 0 40px rgba(0,0,0,0.7); overflow:hidden !important;}
+  .page{background:var(--card); box-shadow:0 0 50px rgba(0,0,0,0.8); overflow:hidden !important;}
   canvas{width:100% !important; height:100% !important; object-fit: contain !important; display:block;}
 
   #status-msg{position:fixed; left:50%; bottom:20px; transform:translateX(-50%); background:rgba(0,0,0,0.8); padding:8px 20px; border-radius:30px; font-size:13px; color:#fff; z-index:10000; border:1px solid var(--accent);}
@@ -131,31 +131,34 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs
     }
 
     function autoFit() {
-      // FIX: Increased coverage to 98% of available height to minimize white bars
-      const vW = window.innerWidth * 0.98;
-      const vH = (window.innerHeight - 60) * 0.98; // Adjusted for the 60px nav
+      // THE FIX: We ignore the width and force the height to take up 100% of the space below the nav
+      const availableHeight = window.innerHeight - 60;
       
-      const scaleW = vW / spreadW;
-      const scaleH = vH / spreadH;
+      // Calculate zoom based strictly on height to remove top/bottom bars
+      currentZoom = availableHeight / spreadH;
       
-      // Choose the larger fit that still respects the screen boundaries
-      currentZoom = Math.min(scaleW, scaleH);
+      // If the resulting width is way too wide for the screen, we nudge it back slightly 
+      // but the priority remains vertical coverage.
+      const resultingWidth = spreadW * currentZoom;
+      if (resultingWidth > window.innerWidth * 1.5) {
+         currentZoom = (window.innerWidth * 1.5) / spreadW;
+      }
       
       flipbookEl.turn('size', spreadW, spreadH);
       applyZoom();
     }
 
-    $('#zoomIn').click(() => { currentZoom *= 1.2; applyZoom(); });
-    $('#zoomOut').click(() => { currentZoom /= 1.2; applyZoom(); });
+    $('#zoomIn').click(() => { currentZoom *= 1.1; applyZoom(); });
+    $('#zoomOut').click(() => { currentZoom /= 1.1; applyZoom(); });
 
     $(window).on('resize', autoFit);
-    setTimeout(autoFit, 600); 
+    setTimeout(autoFit, 700); 
 
     $('#status-msg').fadeOut();
 
   } catch(e) {
     console.error(e);
-    $('#status-msg').text('Error: Verify PDF filename and path.');
+    $('#status-msg').text('Error loading PDF.');
   }
 })();
 </script>
