@@ -4,28 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
-<!-- SEO Essentials -->
 <title>I Think In Spaces Portfolio | MBE Architectural Consultancy</title>
-<meta name="description" content="Technical architectural portfolio showcasing BIM coordination, technical documentation, and pre-construction services by I Think In Spaces, LLC.">
-<meta name="keywords" content="architectural portfolio, BIM coordination NYC, technical documentation, MBE certified, NYC architecture">
+<meta name="description" content="Technical architectural portfolio by I Think In Spaces, LLC.">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://nmangaroo25.github.io/I-Think-In-Spaces/portfolio.html">
-
-<!-- Open Graph -->
-<meta property="og:title" content="I Think In Spaces Portfolio">
-<meta property="og:description" content="Explore our technical project delivery: BIM coordination and architectural support.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://nmangaroo25.github.io/I-Think-In-Spaces/portfolio.html">
-<meta property="og:image" content="assets/img/og-image.jpg">
 
 <style>
   :root{--bg:#1a1c1e;--card:#ffffff;--muted:#a1aab4;--accent:#0077cc;}
   html, body{height:100%;margin:0;font-family:'Inter', sans-serif;background:var(--bg);color:#fff;overflow:hidden;}
   
-  /* Navigation Bar */
-  .nav-ui {position:fixed; top:0; left:0; right:0; height:60px; display:flex; align-items:center; justify-content:space-between; padding:0 20px; background:rgba(0,0,0,0.8); backdrop-filter:blur(10px); z-index:10000; border-bottom:1px solid rgba(255,255,255,0.1);}
+  .nav-ui {position:fixed; top:0; left:0; right:0; height:60px; display:flex; align-items:center; justify-content:space-between; padding:0 20px; background:rgba(0,0,0,0.9); backdrop-filter:blur(10px); z-index:10000; border-bottom:1px solid rgba(255,255,255,0.1);}
   
-  a.back{color:#fff; text-decoration:none; font-weight:600; font-size:14px; display:flex; align-items:center; gap:8px;}
+  a.back{color:#fff; text-decoration:none; font-weight:600; font-size:14px;}
   a.back:hover{color:var(--accent);}
 
   .controls{display:flex; gap:12px; align-items:center;}
@@ -36,18 +25,14 @@
   #pageNum{width:45px; background:transparent; border:none; color:#fff; font-weight:700; text-align:center; font-size:16px;}
   #pageTotal{color:var(--muted); font-size:14px; margin-left:4px;}
 
-  /* Flipbook Area */
   #flipbook-wrap{height:100vh; width:100vw; display:flex; align-items:center; justify-content:center; padding-top:60px; box-sizing:border-box;}
-  #flipbook{transform-origin: center center; transition: transform 0.1s ease-out;}
-  .page{background:var(--card); box-shadow:0 0 20px rgba(0,0,0,0.5);}
+  #flipbook{transform-origin: center center;}
+  
+  /* Page Styling - Improved for Landscape */
+  .page{background:var(--card); box-shadow:0 0 30px rgba(0,0,0,0.6); overflow:hidden;}
   canvas{width:100%; height:100%; display:block;}
 
-  #status-msg{position:fixed; left:50%; bottom:20px; transform:translateX(-50%); background:rgba(0,0,0,0.7); padding:8px 16px; border-radius:20px; font-size:12px; color:var(--muted); z-index:10000;}
-
-  @media (max-width: 768px) {
-    .nav-ui { height:50px; padding:0 10px; }
-    #flipbook-wrap { padding-top:50px; }
-  }
+  #status-msg{position:fixed; left:50%; bottom:20px; transform:translateX(-50%); background:rgba(0,0,0,0.8); padding:8px 20px; border-radius:30px; font-size:13px; color:#fff; z-index:10000; border:1px solid var(--accent);}
 </style>
 </head>
 <body>
@@ -74,7 +59,7 @@
   <div id="flipbook"></div>
 </div>
 
-<div id="status-msg">Initialising High-Resolution Render...</div>
+<div id="status-msg">Optimizing Architectural Render...</div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/0.11/turn.min.js"></script>
@@ -94,7 +79,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs
     const totalPages = pdfDoc.numPages;
     $('#pageTotal').text('/ ' + totalPages);
 
-    // CRITICAL: Increased scale for clarity. 2.0 or 3.0 provides "Retina" quality.
+    // High DPI Scale
     const renderScale = 2.5; 
 
     for(let i=1; i<=totalPages; i++){
@@ -110,7 +95,6 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs
 
       const pageDiv = document.createElement('div');
       pageDiv.className = 'page';
-      // We display at a standard CSS width but the canvas inside is high-res
       pageDiv.style.width = (viewport.width / renderScale) + 'px';
       pageDiv.style.height = (viewport.height / renderScale) + 'px';
       pageDiv.appendChild(canvas);
@@ -120,12 +104,12 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs
     const firstPage = flipbookEl.find('.page')[0];
     const pW = parseFloat(firstPage.style.width);
     const pH = parseFloat(firstPage.style.height);
-    const isMobile = window.innerWidth < 768;
 
+    // FORCE SINGLE PAGE DISPLAY to prevent landscape squeezing
     flipbookEl.turn({
-      width: isMobile ? pW : pW * 2,
+      width: pW,
       height: pH,
-      display: isMobile ? 'single' : 'double',
+      display: 'single', 
       autoCenter: true,
       acceleration: true,
       elevation: 50,
@@ -133,7 +117,6 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs
       duration: 600
     });
 
-    // Navigation Logic
     $('#prev').click(() => flipbookEl.turn('previous'));
     $('#next').click(() => flipbookEl.turn('next'));
     $('#pageNum').on('change', function() {
@@ -141,24 +124,22 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs
     });
     flipbookEl.bind('turned', (e, p) => $('#pageNum').val(p));
 
-    // Zoom Logic
     function applyZoom() { 
       flipbookEl.css('transform', `scale(${currentZoom})`); 
     }
     $('#zoomIn').click(() => { currentZoom = Math.min(3, currentZoom + 0.2); applyZoom(); });
     $('#zoomOut').click(() => { currentZoom = Math.max(0.2, currentZoom - 0.2); applyZoom(); });
 
-    // Responsive Fit
     function autoFit() {
-      const vW = window.innerWidth * 0.9;
-      const vH = (window.innerHeight - 80) * 0.9;
-      const isMob = window.innerWidth < 768;
-      const bookW = isMob ? pW : pW * 2;
-      const scaleW = vW / bookW;
+      const vW = window.innerWidth * 0.92;
+      const vH = (window.innerHeight - 80) * 0.92;
+      
+      // Calculate best fit for landscape page
+      const scaleW = vW / pW;
       const scaleH = vH / pH;
       currentZoom = Math.min(scaleW, scaleH);
-      flipbookEl.turn('display', isMob ? 'single' : 'double');
-      flipbookEl.turn('size', isMob ? pW : pW * 2, pH);
+      
+      flipbookEl.turn('size', pW, pH);
       applyZoom();
     }
 
@@ -169,7 +150,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs
 
   } catch(e) {
     console.error(e);
-    $('#status-msg').text('Error loading PDF. Please check file path.');
+    $('#status-msg').text('Error loading PDF.');
   }
 })();
 </script>
