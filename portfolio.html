@@ -4,7 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
-<!-- SEO Essentials -->
 <title>I Think In Spaces Portfolio | MBE Architectural Consultancy</title>
 <meta name="description" content="Technical architectural portfolio showcasing BIM coordination and pre-construction services.">
 <meta name="robots" content="index, follow">
@@ -13,7 +12,6 @@
   :root{--bg:#1a1c1e;--card:#ffffff;--muted:#a1aab4;--accent:#0077cc;}
   html, body{height:100%;margin:0;font-family:'Inter', sans-serif;background:var(--bg);color:#fff;overflow:hidden;}
   
-  /* Navigation Bar */
   .nav-ui {position:fixed; top:0; left:0; right:0; height:60px; display:flex; align-items:center; justify-content:space-between; padding:0 20px; background:rgba(0,0,0,0.9); backdrop-filter:blur(10px); z-index:10000; border-bottom:1px solid rgba(255,255,255,0.1);}
   
   a.back{color:#fff; text-decoration:none; font-weight:600; font-size:14px;}
@@ -27,19 +25,16 @@
   #pageNum{width:45px; background:transparent; border:none; color:#fff; font-weight:700; text-align:center; font-size:16px;}
   #pageTotal{color:var(--muted); font-size:14px; margin-left:4px;}
 
-  /* Flipbook Area */
   #flipbook-wrap{height:100vh; width:100vw; display:flex; align-items:center; justify-content:center; padding-top:60px; box-sizing:border-box;}
-  #flipbook{transform-origin: center center;}
   
-  .page{background:var(--card); box-shadow:0 0 30px rgba(0,0,0,0.6); overflow:hidden;}
-  canvas{width:100%; height:100%; display:block;}
+  /* CRITICAL FIX: Ensure the flipbook container respects the spread width */
+  #flipbook{transform-origin: center center; display: block !important;}
+  
+  /* CRITICAL FIX: Prevents horizontal squeezing of the 28" spread */
+  .page{background:var(--card); box-shadow:0 0 30px rgba(0,0,0,0.6); overflow:hidden !important;}
+  canvas{width:100% !important; height:100% !important; object-fit: contain !important; display:block;}
 
   #status-msg{position:fixed; left:50%; bottom:20px; transform:translateX(-50%); background:rgba(0,0,0,0.8); padding:8px 20px; border-radius:30px; font-size:13px; color:#fff; z-index:10000; border:1px solid var(--accent);}
-
-  @media (max-width: 768px) {
-    .nav-ui { height:50px; padding:0 10px; }
-    #flipbook-wrap { padding-top:50px; }
-  }
 </style>
 </head>
 <body>
@@ -86,8 +81,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs
     const totalPages = pdfDoc.numPages;
     $('#pageTotal').text('/ ' + totalPages);
 
-    // High resolution render for technical drawings
-    const renderScale = 2.5; 
+    const renderScale = 3.0; // Increased scale for better architectural detail
 
     for(let i=1; i<=totalPages; i++){
       const page = await pdfDoc.getPage(i);
@@ -103,9 +97,12 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs
       const pageDiv = document.createElement('div');
       pageDiv.className = 'page';
       
-      // Matches the actual PDF sheet size (28" wide spreads)
-      pageDiv.style.width = (viewport.width / renderScale) + 'px';
-      pageDiv.style.height = (viewport.height / renderScale) + 'px';
+      // Calculate the intended display size based on the PDF's internal dimensions
+      const displayWidth = viewport.width / renderScale;
+      const displayHeight = viewport.height / renderScale;
+      
+      pageDiv.style.width = displayWidth + 'px';
+      pageDiv.style.height = displayHeight + 'px';
       
       pageDiv.appendChild(canvas);
       flipbookEl.append(pageDiv);
@@ -115,19 +112,17 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs
     const spreadW = parseFloat(firstPage.style.width);
     const spreadH = parseFloat(firstPage.style.height);
 
-    // Initializing flipbook as a series of single-sheet landscape spreads
+    // Initializing with single display because the PDF sheets ARE the spreads
     flipbookEl.turn({
       width: spreadW,
       height: spreadH,
       display: 'single', 
       autoCenter: true,
       acceleration: true,
-      elevation: 50,
       gradients: true,
-      duration: 600
+      duration: 800
     });
 
-    // Navigation Logic
     $('#prev').click(() => flipbookEl.turn('previous'));
     $('#next').click(() => flipbookEl.turn('next'));
     $('#pageNum').on('change', function() {
@@ -139,30 +134,31 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs
       flipbookEl.css('transform', `scale(${currentZoom})`); 
     }
 
-    // Adjusting zoom to fit the 28" spread width into the viewport
     function autoFit() {
-      const vW = window.innerWidth * 0.95;
-      const vH = (window.innerHeight - 80) * 0.95;
+      const vW = window.innerWidth * 0.94;
+      const vH = (window.innerHeight - 80) * 0.94;
       
       const scaleW = vW / spreadW;
       const scaleH = vH / spreadH;
+      
+      // Fits the wide 28" spread into the user's screen
       currentZoom = Math.min(scaleW, scaleH);
       
       flipbookEl.turn('size', spreadW, spreadH);
       applyZoom();
     }
 
-    $('#zoomIn').click(() => { currentZoom += 0.1; applyZoom(); });
-    $('#zoomOut').click(() => { currentZoom -= 0.1; applyZoom(); });
+    $('#zoomIn').click(() => { currentZoom += 0.15; applyZoom(); });
+    $('#zoomOut').click(() => { currentZoom -= 0.15; applyZoom(); });
 
     $(window).on('resize', autoFit);
-    autoFit();
+    setTimeout(autoFit, 500); // Small delay to ensure render is complete
 
     $('#status-msg').fadeOut();
 
   } catch(e) {
     console.error(e);
-    $('#status-msg').text('Error loading PDF. Check file path.');
+    $('#status-msg').text('Error: Verify PDF filename and path.');
   }
 })();
 </script>
