@@ -5,79 +5,81 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
 <!-- SEO Essentials -->
-<title>I Think In Spaces Portfolio | MBE Drafting, BIM & Staging</title>
-<meta name="description" content="Portfolio of I Think In Spaces, LLC, showcasing MBE-certified architectural drafting, BIM coordination, and virtual staging projects for realtors, architects, and contractors.">
-<meta name="keywords" content="architectural drafting portfolio, BIM projects, virtual staging examples, MBE-certified design firm, NYC architecture portfolio">
+<title>I Think In Spaces Portfolio | MBE Architectural Consultancy</title>
+<meta name="description" content="Technical architectural portfolio showcasing BIM coordination, technical documentation, and pre-construction services by I Think In Spaces, LLC.">
+<meta name="keywords" content="architectural portfolio, BIM coordination NYC, technical documentation, MBE certified, NYC architecture">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://nmangaroo25.github.io/I-Think-In-Spaces/portfolio.html">
 
 <!-- Open Graph -->
 <meta property="og:title" content="I Think In Spaces Portfolio">
-<meta property="og:description" content="Explore completed projects: drafting, BIM coordination, and virtual staging by I Think In Spaces.">
+<meta property="og:description" content="Explore our technical project delivery: BIM coordination and architectural support.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://nmangaroo25.github.io/I-Think-In-Spaces/portfolio.html">
 <meta property="og:image" content="assets/img/og-image.jpg">
 
-<!-- Twitter Card -->
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="I Think In Spaces Portfolio">
-<meta name="twitter:description" content="MBE-certified drafting, BIM, and virtual staging projects.">
-<meta name="twitter:image" content="assets/img/og-image.jpg">
-
-<!-- JSON-LD Structured Data -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "I Think In Spaces, LLC",
-  "url": "https://nmangaroo25.github.io/I-Think-In-Spaces/",
-  "logo": "https://nmangaroo25.github.io/I-Think-In-Spaces/assets/img/logo.png",
-  "email": "info@ithinkinspaces.com",
-  "telephone": "+1-917-992-1412",
-  "description": "MBE-certified drafting, BIM coordination, virtual staging, and architectural support services."
-}
-</script>
-
 <style>
-  :root{--bg:#0f1720;--card:#fff;--muted:#8892a6;}
-  html, body{height:100%;margin:0;font-family:Inter,Helvetica,Arial,sans-serif;background:var(--bg);color:#fff;}
-  a.back{position:fixed;left:18px;top:18px;background:#fff;color:#111;padding:8px 12px;border-radius:8px;text-decoration:none;font-weight:600;z-index:9999;}
-  .topbar{position:fixed;right:18px;top:18px;display:flex;gap:8px;align-items:center;z-index:9999;}
-  .btn{background:#fff;color:#111;border:none;padding:8px 10px;border-radius:8px;font-weight:600;cursor:pointer;}
-  .pager{display:flex;gap:6px;align-items:center;background:rgba(255,255,255,0.04);padding:6px 8px;border-radius:8px;}
-  #flipbook-wrap{height:100vh;display:flex;align-items:center;justify-content:center;overflow:auto;}
-  #flipbook{background:transparent;transform-origin: top center;}
-  .page{background:var(--card);display:inline-block;vertical-align:top;}
-  #message{position:fixed;left:18px;bottom:18px;background:rgba(255,255,255,0.06);padding:8px 12px;border-radius:8px;color:var(--muted);font-size:13px;max-width:45%;}
+  :root{--bg:#1a1c1e;--card:#ffffff;--muted:#a1aab4;--accent:#0077cc;}
+  html, body{height:100%;margin:0;font-family:'Inter', sans-serif;background:var(--bg);color:#fff;overflow:hidden;}
+  
+  /* Navigation Bar */
+  .nav-ui {position:fixed; top:0; left:0; right:0; height:60px; display:flex; align-items:center; justify-content:space-between; padding:0 20px; background:rgba(0,0,0,0.8); backdrop-filter:blur(10px); z-index:10000; border-bottom:1px solid rgba(255,255,255,0.1);}
+  
+  a.back{color:#fff; text-decoration:none; font-weight:600; font-size:14px; display:flex; align-items:center; gap:8px;}
+  a.back:hover{color:var(--accent);}
+
+  .controls{display:flex; gap:12px; align-items:center;}
+  .btn{background:rgba(255,255,255,0.1); color:#fff; border:1px solid rgba(255,255,255,0.2); padding:8px 14px; border-radius:6px; font-weight:600; cursor:pointer; transition:0.2s;}
+  .btn:hover{background:var(--accent); border-color:var(--accent);}
+  
+  .pager{display:flex; align-items:center; background:rgba(255,255,255,0.05); padding:4px 10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1);}
+  #pageNum{width:45px; background:transparent; border:none; color:#fff; font-weight:700; text-align:center; font-size:16px;}
+  #pageTotal{color:var(--muted); font-size:14px; margin-left:4px;}
+
+  /* Flipbook Area */
+  #flipbook-wrap{height:100vh; width:100vw; display:flex; align-items:center; justify-content:center; padding-top:60px; box-sizing:border-box;}
+  #flipbook{transform-origin: center center; transition: transform 0.1s ease-out;}
+  .page{background:var(--card); box-shadow:0 0 20px rgba(0,0,0,0.5);}
+  canvas{width:100%; height:100%; display:block;}
+
+  #status-msg{position:fixed; left:50%; bottom:20px; transform:translateX(-50%); background:rgba(0,0,0,0.7); padding:8px 16px; border-radius:20px; font-size:12px; color:var(--muted); z-index:10000;}
+
+  @media (max-width: 768px) {
+    .nav-ui { height:50px; padding:0 10px; }
+    #flipbook-wrap { padding-top:50px; }
+  }
 </style>
 </head>
 <body>
 
-<a class="back" href="https://nmangaroo25.github.io/I-Think-In-Spaces/#home">← Back to Home</a>
-
-<div class="topbar" role="toolbar" aria-label="Flipbook controls">
-  <div class="pager" title="Navigation">
-    <button id="prev" class="btn">‹</button>
-    <input id="pageNum" type="number" min="1" value="1" style="width:64px;padding:6px;border-radius:6px;border:none;font-weight:700">
-    <span id="pageTotal" style="color:var(--muted);font-weight:600;padding-left:6px">/ 0</span>
-    <button id="next" class="btn">›</button>
-  </div>
-  <div style="width:10px"></div>
-  <div class="pager" title="View">
-    <button id="zoomOut" class="btn">−</button>
-    <button id="zoomIn" class="btn">＋</button>
+<div class="nav-ui">
+  <a class="back" href="index.html">← Back to Site</a>
+  
+  <div class="controls">
+    <div class="pager">
+      <button id="prev" class="btn" style="background:none; border:none; padding:0 10px;">‹</button>
+      <input id="pageNum" type="number" value="1">
+      <span id="pageTotal">/ 0</span>
+      <button id="next" class="btn" style="background:none; border:none; padding:0 10px;">›</button>
+    </div>
+    
+    <div class="zoom-group" style="display:flex; gap:5px;">
+      <button id="zoomOut" class="btn">−</button>
+      <button id="zoomIn" class="btn">＋</button>
+    </div>
   </div>
 </div>
 
 <div id="flipbook-wrap">
-  <div id="flipbook" aria-live="polite"></div>
+  <div id="flipbook"></div>
 </div>
 
-<div id="message">Loading flipbook…</div>
+<div id="status-msg">Initialising High-Resolution Render...</div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/0.11/turn.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+
 <script>
 pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js";
 
@@ -85,77 +87,89 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs
   const url = "Norris_Mangaroo_Arch_Portfolio.pdf";
   const flipbookEl = $('#flipbook');
   let currentZoom = 1;
+  let pdfDoc = null;
 
   try {
-    const pdf = await pdfjsLib.getDocument(url).promise;
-    const totalPages = pdf.numPages;
-    $('#pageTotal').text('/ '+totalPages);
+    pdfDoc = await pdfjsLib.getDocument(url).promise;
+    const totalPages = pdfDoc.numPages;
+    $('#pageTotal').text('/ ' + totalPages);
 
-    const maxPageWidth = 800;
+    // CRITICAL: Increased scale for clarity. 2.0 or 3.0 provides "Retina" quality.
+    const renderScale = 2.5; 
 
     for(let i=1; i<=totalPages; i++){
-      const page = await pdf.getPage(i);
-      const viewport = page.getViewport({scale:1});
-      const scale = maxPageWidth / viewport.width;
-      const scaledViewport = page.getViewport({scale: scale});
-
+      const page = await pdfDoc.getPage(i);
+      const viewport = page.getViewport({scale: renderScale});
+      
       const canvas = document.createElement('canvas');
-      canvas.width = scaledViewport.width;
-      canvas.height = scaledViewport.height;
-      await page.render({canvasContext:canvas.getContext('2d'), viewport: scaledViewport}).promise;
+      const ctx = canvas.getContext('2d');
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+
+      await page.render({canvasContext: ctx, viewport: viewport}).promise;
 
       const pageDiv = document.createElement('div');
       pageDiv.className = 'page';
-      pageDiv.style.width = canvas.width+'px';
-      pageDiv.style.height = canvas.height+'px';
+      // We display at a standard CSS width but the canvas inside is high-res
+      pageDiv.style.width = (viewport.width / renderScale) + 'px';
+      pageDiv.style.height = (viewport.height / renderScale) + 'px';
       pageDiv.appendChild(canvas);
       flipbookEl.append(pageDiv);
     }
 
     const firstPage = flipbookEl.find('.page')[0];
-    const displayMode = window.innerWidth < 768 ? 'single' : 'double';
+    const pW = parseFloat(firstPage.style.width);
+    const pH = parseFloat(firstPage.style.height);
+    const isMobile = window.innerWidth < 768;
 
     flipbookEl.turn({
-      width:firstPage.scrollWidth * (displayMode==='double'?2:1),
-      height:firstPage.scrollHeight,
-      display: displayMode,
+      width: isMobile ? pW : pW * 2,
+      height: pH,
+      display: isMobile ? 'single' : 'double',
       autoCenter: true,
+      acceleration: true,
       elevation: 50,
-      duration: 400
+      gradients: true,
+      duration: 600
     });
 
-    $('#prev').click(()=>flipbookEl.turn('previous'));
-    $('#next').click(()=>flipbookEl.turn('next'));
-    $('#pageNum').attr('max', flipbookEl.turn('pages'));
-    $('#pageNum').on('change', function(){
-      const p = Math.max(1, Math.min(flipbookEl.turn('pages'), Number(this.value)||1));
-      flipbookEl.turn('page', p);
+    // Navigation Logic
+    $('#prev').click(() => flipbookEl.turn('previous'));
+    $('#next').click(() => flipbookEl.turn('next'));
+    $('#pageNum').on('change', function() {
+      flipbookEl.turn('page', $(this).val());
     });
-    flipbookEl.bind('turned', (e,p)=>$('#pageNum').val(p));
+    flipbookEl.bind('turned', (e, p) => $('#pageNum').val(p));
 
-    function applyZoom(){ flipbookEl.css('transform', 'scale('+currentZoom+')'); }
-    $('#zoomIn').click(()=>{ currentZoom=Math.min(2.5, (currentZoom+0.1).toFixed(2)); applyZoom(); });
-    $('#zoomOut').click(()=>{ currentZoom=Math.max(0.5, (currentZoom-0.1).toFixed(2)); applyZoom(); });
+    // Zoom Logic
+    function applyZoom() { 
+      flipbookEl.css('transform', `scale(${currentZoom})`); 
+    }
+    $('#zoomIn').click(() => { currentZoom = Math.min(3, currentZoom + 0.2); applyZoom(); });
+    $('#zoomOut').click(() => { currentZoom = Math.max(0.2, currentZoom - 0.2); applyZoom(); });
 
-    function fitScreen(){
-      const winW = window.innerWidth*0.95;
-      const winH = window.innerHeight*0.85;
-      const mode = window.innerWidth < 768 ? 'single' : 'double';
-      const pageW = firstPage.scrollWidth * (mode==='double'?2:1);
-      currentZoom = Math.min(winW/pageW, winH/firstPage.scrollHeight);
-      flipbookEl.turn('display', mode);
+    // Responsive Fit
+    function autoFit() {
+      const vW = window.innerWidth * 0.9;
+      const vH = (window.innerHeight - 80) * 0.9;
+      const isMob = window.innerWidth < 768;
+      const bookW = isMob ? pW : pW * 2;
+      const scaleW = vW / bookW;
+      const scaleH = vH / pH;
+      currentZoom = Math.min(scaleW, scaleH);
+      flipbookEl.turn('display', isMob ? 'single' : 'double');
+      flipbookEl.turn('size', isMob ? pW : pW * 2, pH);
       applyZoom();
     }
 
-    $(window).on('resize', fitScreen);
-    fitScreen();
+    $(window).on('resize', autoFit);
+    autoFit();
 
-    flipbookEl.turn('page',1);
-    $('#message').text('Flipbook loaded — enjoy!');
+    $('#status-msg').fadeOut();
 
   } catch(e) {
     console.error(e);
-    $('#message').text('Error loading PDF');
+    $('#status-msg').text('Error loading PDF. Please check file path.');
   }
 })();
 </script>
