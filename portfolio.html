@@ -12,7 +12,7 @@
   :root{--bg:#1a1c1e;--card:#ffffff;--muted:#a1aab4;--accent:#0077cc;}
   html, body{height:100%;margin:0;font-family:'Inter', sans-serif;background:var(--bg);color:#fff;overflow:hidden;}
   
-  .nav-ui {position:fixed; top:0; left:0; right:0; height:60px; display:flex; align-items:center; justify-content:space-between; padding:0 20px; background:rgba(0,0,0,0.9); backdrop-filter:blur(10px); z-index:10000; border-bottom:1px solid rgba(255,255,255,0.1);}
+  .nav-ui {position:fixed; top:0; left:0; right:0; height:60px; display:flex; align-items:center; justify-content:space-between; padding:0 20px; background:rgba(0,0,0,0.95); backdrop-filter:blur(10px); z-index:10000; border-bottom:1px solid rgba(255,255,255,0.1);}
   
   a.back{color:#fff; text-decoration:none; font-weight:600; font-size:14px;}
   a.back:hover{color:var(--accent);}
@@ -25,13 +25,11 @@
   #pageNum{width:45px; background:transparent; border:none; color:#fff; font-weight:700; text-align:center; font-size:16px;}
   #pageTotal{color:var(--muted); font-size:14px; margin-left:4px;}
 
-  #flipbook-wrap{height:100vh; width:100vw; display:flex; align-items:center; justify-content:center; padding-top:60px; box-sizing:border-box;}
+  #flipbook-wrap{height:100vh; width:100vw; display:flex; align-items:center; justify-content:center; padding-top:60px; box-sizing:border-box; overflow:hidden;}
   
-  /* CRITICAL FIX: Ensure the flipbook container respects the spread width */
   #flipbook{transform-origin: center center; display: block !important;}
   
-  /* CRITICAL FIX: Prevents horizontal squeezing of the 28" spread */
-  .page{background:var(--card); box-shadow:0 0 30px rgba(0,0,0,0.6); overflow:hidden !important;}
+  .page{background:var(--card); box-shadow:0 0 40px rgba(0,0,0,0.7); overflow:hidden !important;}
   canvas{width:100% !important; height:100% !important; object-fit: contain !important; display:block;}
 
   #status-msg{position:fixed; left:50%; bottom:20px; transform:translateX(-50%); background:rgba(0,0,0,0.8); padding:8px 20px; border-radius:30px; font-size:13px; color:#fff; z-index:10000; border:1px solid var(--accent);}
@@ -81,7 +79,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs
     const totalPages = pdfDoc.numPages;
     $('#pageTotal').text('/ ' + totalPages);
 
-    const renderScale = 3.0; // Increased scale for better architectural detail
+    const renderScale = 3.0; 
 
     for(let i=1; i<=totalPages; i++){
       const page = await pdfDoc.getPage(i);
@@ -97,7 +95,6 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs
       const pageDiv = document.createElement('div');
       pageDiv.className = 'page';
       
-      // Calculate the intended display size based on the PDF's internal dimensions
       const displayWidth = viewport.width / renderScale;
       const displayHeight = viewport.height / renderScale;
       
@@ -112,7 +109,6 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs
     const spreadW = parseFloat(firstPage.style.width);
     const spreadH = parseFloat(firstPage.style.height);
 
-    // Initializing with single display because the PDF sheets ARE the spreads
     flipbookEl.turn({
       width: spreadW,
       height: spreadH,
@@ -135,24 +131,25 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs
     }
 
     function autoFit() {
-      const vW = window.innerWidth * 0.94;
-      const vH = (window.innerHeight - 80) * 0.94;
+      // FIX: Increased coverage to 98% of available height to minimize white bars
+      const vW = window.innerWidth * 0.98;
+      const vH = (window.innerHeight - 60) * 0.98; // Adjusted for the 60px nav
       
       const scaleW = vW / spreadW;
       const scaleH = vH / spreadH;
       
-      // Fits the wide 28" spread into the user's screen
+      // Choose the larger fit that still respects the screen boundaries
       currentZoom = Math.min(scaleW, scaleH);
       
       flipbookEl.turn('size', spreadW, spreadH);
       applyZoom();
     }
 
-    $('#zoomIn').click(() => { currentZoom += 0.15; applyZoom(); });
-    $('#zoomOut').click(() => { currentZoom -= 0.15; applyZoom(); });
+    $('#zoomIn').click(() => { currentZoom *= 1.2; applyZoom(); });
+    $('#zoomOut').click(() => { currentZoom /= 1.2; applyZoom(); });
 
     $(window).on('resize', autoFit);
-    setTimeout(autoFit, 500); // Small delay to ensure render is complete
+    setTimeout(autoFit, 600); 
 
     $('#status-msg').fadeOut();
 
